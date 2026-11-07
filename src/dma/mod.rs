@@ -24,6 +24,7 @@ pub struct DmaChannel {
     pub irq_enable: bool,
     pub enabled: bool,
     pub is_running: bool,
+    pub gamepak_drq: bool,
 }
 
 impl DmaChannel {
@@ -43,6 +44,7 @@ impl DmaChannel {
             irq_enable: false,
             enabled: false,
             is_running: false,
+            gamepak_drq: false,
         }
     }
 
@@ -61,12 +63,27 @@ impl DmaChannel {
         self.irq_enable = (val & (1 << 14)) != 0;
         self.enabled = (val & (1 << 15)) != 0;
 
-        if !old_enabled && self.enabled {
-            self.cur_sad = self.sad;
-            self.cur_dad = self.dad;
-            let max_count = if ch == 3 { 0x10000 } else { 0x4000 };
-            self.cur_count = if self.count == 0 { max_count } else { self.count };
+        if ch != 3 {
+            // Game Pak DRQ (bit 11) exists on DMA3 only.
+            self.gamepak_drq = false;
+        } else {
+            self.gamepak_drq = val & (1 << 11) != 0;
         }
+        if !old_enabled && self.enabled {
+            // Latch addresses (masked per channel) and count.
+            let sad_mask = if ch == 0 { 0x07FF_FFFF } else { 0x0FFF_FFFF };
+            let dad_mask = if ch == 3 { 0x0FFF_FFFF } else { 0x07FF_FFFF };
+            let align = if self.is_32bit { !3 } else { !1 };
+            self.cur_sad = self.sad & sad_mask & align;
+            self.cur_dad = self.dad & dad_mask & align;
+            self.reload_count(ch);
+        }
+    }
+
+    pub fn reload_count(&mut self, ch: usize) {
+        let (mask, max) = if ch == 3 { (0xFFFF, 0x10000) } else { (0x3FFF, 0x4000) };
+        let c = self.count & mask;
+        self.cur_count = if c == 0 { max } else { c };
     }
 
     pub fn read_control(&self) -> u16 {
@@ -74,6 +91,7 @@ impl DmaChannel {
             | ((self.src_adj as u16) << 7)
             | ((self.repeat as u16) << 9)
             | ((self.is_32bit as u16) << 10)
+            | ((self.gamepak_drq as u16) << 11)
             | (((self.trigger as u16) & 3) << 12)
             | ((self.irq_enable as u16) << 14)
             | ((self.enabled as u16) << 15)
@@ -153,10 +171,11 @@ impl DmaController {
         let ch = ((addr - 0x040000B0) / 12) as usize;
         let reg = (addr - 0x040000B0) % 12;
         if ch >= 4 { return open_bus; }
+        // SAD/DAD/count are write-only and read back as 0.
         if reg == 10 {
             self.channels[ch].read_control()
         } else {
-            open_bus
+            0
         }
     }
 }

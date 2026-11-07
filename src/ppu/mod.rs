@@ -4,7 +4,13 @@ pub const SCREEN_WIDTH: usize = 240;
 pub const SCREEN_HEIGHT: usize = 160;
 pub const TOTAL_SCANLINES: usize = 228;
 pub const CYCLES_PER_SCANLINE: u32 = 1232;
-pub const HDRAW_CYCLES: u32 = 960;
+/// Dot at which the HBlank flag, HBlank IRQ and HBlank DMA fire. The
+/// visible draw ends at 960, but the flag is raised ~46 cycles later
+/// (GBATEK; confirmed by lockstep against the reference).
+pub const HDRAW_CYCLES: u32 = 1006;
+/// Extra cycles before the HBlank IRQ line rises (lockstep vs reference,
+/// together with IRQ_LATENCY_CYCLES: the line rises in dots 1012..1017).
+pub const HBLANK_IRQ_LAG: u32 = 8;
 
 #[derive(Clone, Copy)]
 pub struct Pixel {
@@ -27,7 +33,13 @@ impl Default for Pixel {
     }
 }
 
+/// Scanline the PPU is on at power-on (see `reset`).
+pub const RESET_VCOUNT: u16 = 225;
+
 pub struct Ppu {
+    /// Cycles between the most recent PPU IRQ raise and the end of the
+    /// last `step_cycles` call (to timestamp the IRQ line exactly).
+    pub irq_overshoot: i32,
     pub vcount: u16,
     pub scanline_cycles: u32,
 
@@ -86,6 +98,7 @@ impl Ppu {
         Self {
             vcount: 0,
             scanline_cycles: 0,
+            irq_overshoot: 0,
             dispcnt: 0x0080, // Forced blank initially
             dispstat: 0,
             bgcnt: [0; 4],
@@ -122,10 +135,13 @@ impl Ppu {
     }
 
     pub fn reset(&mut self) {
-        self.vcount = 0;
+        // Power-on phase matched to the reference (Mesen2 with boot skip):
+        // its first VBlank begins at clock ~200816, i.e. line 0 starts
+        // 3 lines after reset.
+        self.vcount = RESET_VCOUNT;
         self.scanline_cycles = 0;
-        self.dispcnt = 0;
-        self.dispstat = 0;
+        self.dispcnt = 0x0080; // BIOS exits with forced blank set
+        self.dispstat = 1; // in VBlank
         self.bgcnt = [0; 4];
         self.bghofs = [0; 4];
         self.bgvofs = [0; 4];
@@ -249,11 +265,13 @@ impl Ppu {
             3 => {
                 // Bitmap Mode 3: 240x160 16-bit
                 if self.dispcnt & (1 << 10) != 0 {
-                    let base = y * SCREEN_WIDTH * 2;
+                    let (mw, mh) = self.bg_mosaic(2);
+                    let base = (y - y % mh) * SCREEN_WIDTH * 2;
                     let prio = (self.bgcnt[2] & 3) as u8;
                     for x in 0..SCREEN_WIDTH {
-                        if base + x * 2 + 1 < vram.len() {
-                            let col = u16::from_le_bytes([vram[base + x * 2], vram[base + x * 2 + 1]]) & 0x7FFF;
+                        let xs = x - x % mw;
+                        if base + xs * 2 + 1 < vram.len() {
+                            let col = u16::from_le_bytes([vram[base + xs * 2], vram[base + xs * 2 + 1]]) & 0x7FFF;
                             bg_line[x] = Pixel { color: col, priority: prio, is_obj: false, is_semi_transparent: false, layer_id: 2 };
                         }
                     }
@@ -263,11 +281,14 @@ impl Ppu {
                 // Bitmap Mode 4: 240x160 8-bit palette
                 if self.dispcnt & (1 << 10) != 0 {
                     let frame_offset = if self.dispcnt & (1 << 4) != 0 { 0xA000 } else { 0 };
-                    let base = frame_offset + y * SCREEN_WIDTH;
+                    let (mw, mh) = self.bg_mosaic(2);
+                    let base = frame_offset + (y - y % mh) * SCREEN_WIDTH;
                     let prio = (self.bgcnt[2] & 3) as u8;
                     for x in 0..SCREEN_WIDTH {
-                        if base + x < vram.len() {
-                            let idx = vram[base + x] as usize;
+                        let xs = x - x % mw;
+                        if base + xs < vram.len() {
+                            let idx = vram[base + xs] as usize;
+                            if idx == 0 { continue; }
                             let col = u16::from_le_bytes([palette[idx * 2], palette[idx * 2 + 1]]) & 0x7FFF;
                             bg_line[x] = Pixel { color: col, priority: prio, is_obj: false, is_semi_transparent: false, layer_id: 2 };
                         }
@@ -278,11 +299,13 @@ impl Ppu {
                 // Bitmap Mode 5: 160x128 16-bit
                 if self.dispcnt & (1 << 10) != 0 && y < 128 {
                     let frame_offset = if self.dispcnt & (1 << 4) != 0 { 0xA000 } else { 0 };
-                    let base = frame_offset + y * 160 * 2;
+                    let (mw, mh) = self.bg_mosaic(2);
+                    let base = frame_offset + (y - y % mh) * 160 * 2;
                     let prio = (self.bgcnt[2] & 3) as u8;
                     for x in 0..160 {
-                        if base + x * 2 + 1 < vram.len() {
-                            let col = u16::from_le_bytes([vram[base + x * 2], vram[base + x * 2 + 1]]) & 0x7FFF;
+                        let xs = x - x % mw;
+                        if base + xs * 2 + 1 < vram.len() {
+                            let col = u16::from_le_bytes([vram[base + xs * 2], vram[base + xs * 2 + 1]]) & 0x7FFF;
                             bg_line[x] = Pixel { color: col, priority: prio, is_obj: false, is_semi_transparent: false, layer_id: 2 };
                         }
                     }
@@ -357,6 +380,15 @@ impl Ppu {
         }
     }
 
+    /// Mosaic block size (w, h) for a BG, or (1, 1) when disabled.
+    fn bg_mosaic(&self, bg: usize) -> (usize, usize) {
+        if self.bgcnt[bg] & (1 << 6) != 0 {
+            (((self.mosaic & 0xF) + 1) as usize, (((self.mosaic >> 4) & 0xF) + 1) as usize)
+        } else {
+            (1, 1)
+        }
+    }
+
     fn render_scanline_text_bg(&self, bg: usize, y: usize, palette: &[u8], vram: &[u8], line: &mut [Pixel; SCREEN_WIDTH]) {
         let cnt = self.bgcnt[bg];
         let prio = (cnt & 3) as u8;
@@ -367,6 +399,8 @@ impl Ppu {
 
         let hofs = (self.bghofs[bg] & 0x1FF) as usize;
         let vofs = (self.bgvofs[bg] & 0x1FF) as usize;
+        let (mw, mh) = self.bg_mosaic(bg);
+        let y = y - y % mh;
         let py = (y + vofs) & (if screen_size >= 2 { 511 } else { 255 });
 
         let tile_y = py / 8;
@@ -377,7 +411,7 @@ impl Ppu {
                 continue;
             }
 
-            let px = (x + hofs) & (if screen_size == 1 || screen_size == 3 { 511 } else { 255 });
+            let px = (x - x % mw + hofs) & (if screen_size == 1 || screen_size == 3 { 511 } else { 255 });
             let tile_x = px / 8;
             let in_tile_x = px % 8;
 
@@ -427,7 +461,7 @@ impl Ppu {
         }
     }
 
-    fn render_scanline_affine_bg(&self, bg: usize, _y: usize, palette: &[u8], vram: &[u8], line: &mut [Pixel; SCREEN_WIDTH]) {
+    fn render_scanline_affine_bg(&self, bg: usize, y: usize, palette: &[u8], vram: &[u8], line: &mut [Pixel; SCREEN_WIDTH]) {
         let cnt = self.bgcnt[bg];
         let prio = (cnt & 3) as u8;
         let char_base = (((cnt >> 2) & 3) as usize) * 0x4000;
@@ -442,20 +476,22 @@ impl Ppu {
             _ => 1024,
         };
 
-        let (pa, pc, ref_x, ref_y) = if bg == 2 {
-            (self.bg2pa as i32, self.bg2pc as i32, self.bg2_cur_x, self.bg2_cur_y)
+        let (pa, pb, pc, pd, ref_x, ref_y) = if bg == 2 {
+            (self.bg2pa as i32, self.bg2pb as i32, self.bg2pc as i32, self.bg2pd as i32, self.bg2_cur_x, self.bg2_cur_y)
         } else {
-            (self.bg3pa as i32, self.bg3pc as i32, self.bg3_cur_x, self.bg3_cur_y)
+            (self.bg3pa as i32, self.bg3pb as i32, self.bg3pc as i32, self.bg3pd as i32, self.bg3_cur_x, self.bg3_cur_y)
         };
-
-        let mut rx = ref_x;
-        let mut ry = ref_y;
+        // Vertical mosaic: sample with the reference point of the first
+        // line of the mosaic block.
+        let (mw, mh) = self.bg_mosaic(bg);
+        let back = (y % mh) as i32;
+        let ref_x = ref_x - back * pb;
+        let ref_y = ref_y - back * pd;
 
         for x in 0..SCREEN_WIDTH {
-            let px = rx >> 8;
-            let py = ry >> 8;
-            rx += pa;
-            ry += pc;
+            let xm = (x - x % mw) as i32;
+            let px = (ref_x + xm * pa) >> 8;
+            let py = (ref_y + xm * pc) >> 8;
 
             if prio > line[x].priority {
                 continue;
@@ -549,6 +585,18 @@ impl Ppu {
             let prio = ((attr2 >> 10) & 3) as u8;
             let tile_base = (attr2 & 0x3FF) as usize;
             let pal_num = ((attr2 >> 12) & 0xF) as usize;
+            // In bitmap modes the lower half of OBJ VRAM holds the
+            // bitmap; tiles 0..511 are not displayed.
+            if self.dispcnt & 7 >= 3 && tile_base < 512 {
+                continue;
+            }
+            let mosaic = attr0 & (1 << 12) != 0;
+            let (omw, omh) = if mosaic {
+                ((((self.mosaic >> 8) & 0xF) + 1) as usize, (((self.mosaic >> 12) & 0xF) + 1) as usize)
+            } else {
+                (1, 1)
+            };
+            let in_spr_y = in_spr_y.saturating_sub(y % omh);
 
             if !is_affine {
                 let hflip = attr1 & (1 << 12) != 0;
@@ -561,6 +609,9 @@ impl Ppu {
 
                     if prio > obj_line[screen_x].priority { continue; }
 
+                    // Horizontal mosaic samples the first pixel of the
+                    // screen-aligned block (clamped to the sprite).
+                    let in_spr_x = in_spr_x.saturating_sub(screen_x % omw);
                     let px = if hflip { width - 1 - in_spr_x } else { in_spr_x };
                     let (color, has_pixel) = self.get_obj_pixel(px, py, width, tile_base, is_8bpp, pal_num, is_1d_map, palette, vram, obj_vram_start);
 
@@ -713,14 +764,22 @@ impl Ppu {
             let g = ((top.color >> 5) & 0x1F) as u32;
             let b = ((top.color >> 10) & 0x1F) as u32;
 
-            let new_r = r.saturating_sub((r * evy) / 16);
-            let new_g = g.saturating_sub((g * evy) / 16);
-            let new_b = b.saturating_sub((b * evy) / 16);
+            // floor(I * (16 - EVY) / 16), matching the reference's rounding
+            // (I - floor(I * EVY / 16) is one step too bright).
+            let new_r = (r * (16 - evy)) / 16;
+            let new_g = (g * (16 - evy)) / 16;
+            let new_b = (b * (16 - evy)) / 16;
 
             return (new_r | (new_g << 5) | (new_b << 10)) as u16;
         }
 
         top.color
+    }
+
+    /// Cycles until the next HBlank or line-end event.
+    pub fn cycles_to_next_event(&self) -> u32 {
+        let sc = self.scanline_cycles;
+        if sc < HDRAW_CYCLES { HDRAW_CYCLES - sc } else { CYCLES_PER_SCANLINE.saturating_sub(sc).max(1) }
     }
 
     pub fn step_cycles(&mut self, cycles: u32, if_reg: &mut u16, palette: &[u8], vram: &[u8], oam: &[u8]) -> (bool, bool) {
@@ -736,6 +795,9 @@ impl Ppu {
                 hblank_trigger = true;
                 if self.dispstat & (1 << 4) != 0 {
                     *if_reg |= 1 << 1; // HBlank IRQ
+                    // The IRQ line rises HBLANK_IRQ_LAG after the flag
+                    // (negative overshoot = rise is still in the future).
+                    self.irq_overshoot = self.scanline_cycles as i32 - (HDRAW_CYCLES + HBLANK_IRQ_LAG) as i32;
                 }
                 // Render visible scanline during HDRAW
                 self.render_scanline(palette, vram, oam);
@@ -764,11 +826,12 @@ impl Ppu {
 
             // Update VBlank flag
             if self.vcount >= 160 && self.vcount <= 226 {
-                if (self.dispstat & 1) == 0 {
-                    self.dispstat |= 1; // Set VBlank flag
+                self.dispstat |= 1; // VBlank flag
+                if self.vcount == 160 {
                     vblank_trigger = true;
                     if self.dispstat & (1 << 3) != 0 {
                         *if_reg |= 1 << 0; // VBlank IRQ
+                        self.irq_overshoot = self.scanline_cycles as i32;
                     }
                 }
             } else {
@@ -781,6 +844,7 @@ impl Ppu {
                 self.dispstat |= 4; // V-Counter match
                 if self.dispstat & (1 << 5) != 0 {
                     *if_reg |= 1 << 2; // V-Counter IRQ
+                    self.irq_overshoot = self.scanline_cycles as i32;
                 }
             } else {
                 self.dispstat &= !4;

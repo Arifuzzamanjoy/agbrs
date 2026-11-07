@@ -10,13 +10,15 @@ All deliverables requested for the engineering trial are documented and organize
 
 | Deliverable | Location | Description |
 |---|---|---|
-| **Executive Handoff** | [HANDOFF.md](HANDOFF.md) | Architectural overview, benchmark results (0.3789), and limitations |
+| **Executive Handoff** | [HANDOFF.md](HANDOFF.md) | Architectural overview, benchmark results (baseline 0.3789 → see the 2026-11-07 pass), and limitations |
 | **Compiled Artifact** | [dist/gba_emu.wasm](dist/gba_emu.wasm) | Pre-built, verified release WebAssembly binary (85 KB) |
 | **Reproduction Guide** | [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md) | Step-by-step instructions to rebuild, run unit tests, and grade against Mesen2 |
 | **Decisions & Failures** | [docs/DECISIONS_AND_FAILURES.md](docs/DECISIONS_AND_FAILURES.md) | Log of intermediate design pivots, failed attempts, and bug diagnoses |
 | **Workflow Metadata** | [docs/WORKFLOW_METADATA.md](docs/WORKFLOW_METADATA.md) | Toolchain versions (Rust 1.99.1), human time spent (13.5 hrs), and model usage |
 | **AI Agent Configs** | [agent/antigravity/](agent/antigravity/) | Prompts, subagent configurations, and filtered engineering conversations |
-| **Benchmark Output** | [results/summary.json](results/summary.json) | Full per-testcase grading output across all 27 testcases |
+| **Benchmark Output** | [results/](results/) | `summary.json` + per-test `scores.txt` for the baseline, intermediate and final runs (all 27 testcases) |
+| **Timing model** | [docs/TIMING_MODEL.md](docs/TIMING_MODEL.md) | Cycle-timing rules derived by instruction-level lockstep against the reference, with evidence and known gaps |
+| **Dev tools** | [tools/](tools/), [examples/run.rs](examples/run.rs) | Native grading scripts, lockstep tracer vs Mesen2, frame/audio diff tools, native debug runner |
 
 ---
 

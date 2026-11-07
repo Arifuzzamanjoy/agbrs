@@ -1,5 +1,10 @@
 //! GBA Hardware Timers (Timer 0..3).
 
+/// Delay between the enabling write and counting (tuned against the
+/// NBA timer-reload/start-stop tests as graded vs Mesen2).
+pub const TIMER_START_DELAY: u32 = 2;
+pub const TIMER_STOP_DELAY: u32 = 1;
+
 pub struct Timer {
     pub reload: u16,
     pub counter: u16,
@@ -9,6 +14,10 @@ pub struct Timer {
     pub enabled: bool,
     pub sub_cycles: u32,
     pub overflow: bool,
+    /// Cycles after enabling before the first prescaler tick.
+    pub start_delay: u32,
+    /// A disabling write takes effect after this many cycles.
+    pub stop_in: u32,
 }
 
 impl Timer {
@@ -22,6 +31,8 @@ impl Timer {
             enabled: false,
             sub_cycles: 0,
             overflow: false,
+            start_delay: 0,
+            stop_in: 0,
         }
     }
 
@@ -36,10 +47,17 @@ impl Timer {
         self.count_up = (val & (1 << 2)) != 0;
         self.irq_enable = (val & (1 << 6)) != 0;
         self.enabled = (val & (1 << 7)) != 0;
+        self.stop_in = 0;
+        if old_enabled && !self.enabled && !self.count_up {
+            // Keeps counting for one more cycle (NBA start-stop test).
+            self.enabled = true;
+            self.stop_in = TIMER_STOP_DELAY;
+        }
 
         if !old_enabled && self.enabled {
             self.counter = self.reload;
             self.sub_cycles = 0;
+            self.start_delay = TIMER_START_DELAY;
         }
     }
 
@@ -53,13 +71,32 @@ impl Timer {
         prescaler_bits
             | ((self.count_up as u16) << 2)
             | ((self.irq_enable as u16) << 6)
-            | ((self.enabled as u16) << 7)
+            | (((self.enabled && self.stop_in == 0) as u16) << 7)
     }
 
-    pub fn step_cycles(&mut self, cycles: u32) -> bool {
+    pub fn step_cycles(&mut self, mut cycles: u32) -> bool {
         if !self.enabled || self.count_up {
             return false;
         }
+        let mut stopping = false;
+        if self.stop_in > 0 {
+            cycles = cycles.min(self.stop_in);
+            stopping = true;
+        }
+        if self.start_delay > 0 {
+            let d = self.start_delay.min(cycles);
+            self.start_delay -= d;
+            cycles -= d;
+        }
+        let r = self.count_cycles(cycles);
+        if stopping {
+            self.stop_in = 0;
+            self.enabled = false;
+        }
+        r
+    }
+
+    fn count_cycles(&mut self, cycles: u32) -> bool {
 
         self.sub_cycles += cycles;
         let period = 1 << self.prescaler_shift;
@@ -111,6 +148,20 @@ impl Default for Timers {
 }
 
 impl Timers {
+    /// Cycles until the earliest overflow of a free-running timer.
+    pub fn cycles_to_overflow(&self) -> u32 {
+        let mut best = u32::MAX;
+        for t in &self.t {
+            if t.enabled && !t.count_up {
+                let period = 1u32 << t.prescaler_shift;
+                let ticks = 0x10000 - t.counter as u32;
+                let c = t.start_delay + ticks * period - t.sub_cycles;
+                best = best.min(c.max(1));
+            }
+        }
+        best
+    }
+
     pub fn new() -> Self {
         Self {
             t: [Timer::new(), Timer::new(), Timer::new(), Timer::new()],

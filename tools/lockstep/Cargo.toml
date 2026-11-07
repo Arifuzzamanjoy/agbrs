@@ -1,0 +1,12 @@
+[package]
+name = "gba-lockstep"
+version = "0.1.0"
+edition = "2021"
+description = "Instruction-level lockstep tracer: our core (native) vs Mesen2 reference wasm"
+
+[dependencies]
+gba_emu = { path = "../.." }
+anyhow = "1"
+wasmtime = { version = "27", default-features = false, features = ["cranelift", "runtime"] }
+
+[workspace]

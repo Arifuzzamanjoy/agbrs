@@ -114,9 +114,15 @@ pub extern "C" fn emu_audio_rate() -> i32 {
     }
 }
 
+/// Optional ABI extension read by the gba-eval grader: frames burned
+/// before comparison starts. The bundled Mesen2 reference reports 6
+/// (its post-reset warmup, during which the game already runs), so
+/// reference "frame 0" is the 7th frame after power-on. We emulate from
+/// power-on with no warmup, so reporting the same 6 makes frame N mean
+/// the same point in time on both sides.
 #[no_mangle]
 pub extern "C" fn emu_boot_frames() -> i32 {
-    0
+    6
 }
 
 #[no_mangle]

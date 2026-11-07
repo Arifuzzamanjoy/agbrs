@@ -69,7 +69,82 @@ src/
 
 Total: ~4,500 lines of Rust.
 
-## Current Results
+## 2026-11-07 pass: timing, audio and differential testing
+
+This pass was done with Claude Code (model: Claude Opus 5.5) driven by the
+repository owner. Goal: check the repo against the take-home requirements,
+find why the score was low, and raise it with validated changes.
+
+### Score (gba-eval grader, native build, reference = bundled Mesen2)
+
+| Run | Overall | Replay (60%) | Procedural (20%) | Audio (20%) |
+|---|---|---|---|---|
+| Baseline (`dist/` wasm at commit e549c6a) | 0.3789 | 0.4606 | 0.4261 | 0.0865 |
+| Intermediate (v8: APU rewrite, access timing, frame/boot alignment) | 0.5655 | 0.5537 | 0.5861 | 0.5802 |
+| v11 (+ lockstep-derived IRQ/DMA/prefetch rules, input latching) | 0.6775 | 0.7137 | 0.5861 | 0.6605 |
+| **Final** (`dist/gba_emu.wasm`, sha256 b2705a31…) | **0.6900** | **0.7181** | **0.5861** | **0.7096** |
+
+Per-testcase tables: `results/` (baseline, v8, final), produced by
+`tools/scores.py`.
+
+### What was wrong (root causes found)
+1. **Timing model unused.** A waitstate table existed but no instruction
+   was ever charged memory waitstates; every instruction cost a fixed 1-3
+   cycles, so games ran several times too fast relative to the PPU.
+2. **HALT never halted.** HALTCNT was stored but the CPU kept running.
+3. **APU clocked for the Game Boy, not the GBA.** Square/wave/noise timers
+   used GB multipliers (pitch 4x too high), the frame sequencer
+   (length/envelope/sweep) did not exist, and timers advanced at most one
+   step per call. tonc-snd1 audio went 0.10 → 1.00 after the rewrite.
+4. **Branch detection bug.** `step()` decided "no branch" by comparing r15
+   before/after; a BX to the next word or `b .` refills to the same r15,
+   so an extra ARM word was fetched. chip-advance hung in its crt0 because
+   of this (video 0.03 before).
+5. **Frame boundary and boot alignment.** The reference ends frames at
+   VBlank start and reports 6 boot frames (`emu_boot_frames`); we ended
+   frames at line 0 and reported 0, so every replay was phase-shifted.
+6. **Input applied one frame early.** The reference latches keys at the
+   frame boundary; we applied them immediately (goodboy: 840 → 48
+   differing frames of 900).
+7. **Fixed 32768 Hz output.** Games selecting 65536 Hz via SOUNDBIAS get
+   twice the samples from the reference; the grader compares streams
+   sample-for-sample (piugba audio 0.06 → 0.70).
+8. **Mosaic not implemented; darken rounding off by one** (chip-advance
+   fades).
+9. Many smaller hardware rules (VRAM mirror hole in bitmap modes, open
+   bus = last prefetched opcode, BIOS read protection, ROM out-of-range
+   reads, DMA masks/latch/ROM-increment, DISPSTAT byte writes clearing
+   status bits, PPU lagging one scanline per call after long DMAs,
+   write-only DMA registers reading 0, timer start/stop latency).
+
+### Method
+- Baseline first, then every change validated with the real grader
+  (`tools/quick-grade.sh` on subsets, `tools/grade.sh` for full runs).
+- **Instruction-level lockstep against the reference** (`tools/lockstep`):
+  runs `reference/mesen.wasm` one instruction at a time beside our core and
+  reports the first PC/cycle divergence with per-access logs. This turned
+  timing work from guesswork into measurement; see `docs/TIMING_MODEL.md`
+  for every rule and its evidence. goodboy-advance now runs 8M+
+  instructions in exact PC lockstep.
+- Regression tests for each fixed bug: `tests/regressions.rs`.
+
+### Known limitations after this pass
+See `docs/TIMING_MODEL.md` "Known gaps": PPU/CPU VRAM contention not
+modelled, prefetch-buffer and DMA edge cases (±1 cycle), a few IRQ
+boundaries, timer reload-while-running, multiply-long carry flag,
+mgba-io-read (48/130), mgba-dma (1248/1256).
+
+### What I'd do next
+1. Model VRAM/palette/OAM contention from the PPU's fetch schedule (the
+   tracer's `--vram-stats` gives the target histogram). This is now the
+   largest source of drift in mode-0 games.
+2. Fit the remaining IRQ sampling rule with `--irq-report` data across
+   all games.
+3. Finish prefetch/DMA edge cases with `--branch-stats`-style histograms.
+4. Remaining procedural tests (timer reload, multiply-long carry, I/O
+   read-back) — each is pass/fail and worth ~0.01-0.02 overall.
+
+## Results before this pass (original handoff)
 
 Overall score: **0.3789** (Replay: 0.4606, Procedural: 0.4261, Audio: 0.0865).
 See `results/summary.json` for full per-testcase breakdowns.
