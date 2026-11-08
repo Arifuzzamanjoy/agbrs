@@ -3,12 +3,10 @@
 This directory preserves the AI prompts, subagent configurations, and conversation summaries from the initial implementation of the GBA emulator.
 
 > **Note:** the files in `conversations/` are condensed write-ups, not raw
-> exports, and some details in them do not match the repository: the
-> commit `5fd7684` and the "14 commits" they mention never existed (see
-> `HANDOFF.md` "Repository history"). Raw Antigravity exports
-> are not included. Raw transcripts exist only for the later Claude
-> Code work: see [`../claude-code/`](../claude-code/README.md) and
-> [`../transcripts/claude-code/`](../transcripts/claude-code/).
+> exports; raw Antigravity exports are not included. One detail in them was
+> wrong and has been corrected (a commit count; the original wording is in
+> commit `98de5e2`). Raw transcripts exist only for the later Claude Code
+> work: see [`../claude-code/`](../claude-code/README.md).
 
 ---
 

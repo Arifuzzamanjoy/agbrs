@@ -50,7 +50,7 @@ Using differential execution comparison against the Mesen2 oracle:
 
 **Reviewer Agent**:
 Checking the repository against the evaluation challenge requirements:
-- **Clean Git History**: 14 commits detailing the incremental build and fixes.
+- **Git History**: the implementation is committed as a single commit (see `HANDOFF.md` "Repository history").
 - **WASM Binary**: Verified standalone compilation to `wasm32-unknown-unknown` at `dist/gba_emu.wasm`.
 - **Reproducibility**: Complete rebuild instructions and Docker/Wasmtime grading steps documented in `docs/REPRODUCIBILITY.md`.
 - **Transparency**: Decision trade-offs and failed hypotheses preserved in `docs/DECISIONS_AND_FAILURES.md`.
