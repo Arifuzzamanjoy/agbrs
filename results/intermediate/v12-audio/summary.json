@@ -1,0 +1,61 @@
+{
+  "candidate": "v12",
+  "candidate_sha256": "6217b93d71321d3f7911afcd9b82dd1ce636ee2d522bd27cb435c008aca7d7a2",
+  "graded_at": "2026-11-07T14:04:07Z",
+  "per_testcase": {
+    "waimanu-gameplay": {
+      "video_score": 0.9989122066469844,
+      "audio_score": 0.988500274710776,
+      "section": "replay",
+      "subsystem": "gameplay"
+    },
+    "piugba-gameplay": {
+      "video_score": 0.5320949117137245,
+      "audio_score": 0.700123565171349,
+      "section": "replay",
+      "subsystem": "gameplay"
+    },
+    "chip-advance-gameplay": {
+      "video_score": 0.09898416771516132,
+      "audio_score": 0.019291788710581233,
+      "section": "replay",
+      "subsystem": "gameplay"
+    },
+    "tonc-snd1": {
+      "video_score": 0.9997085183558861,
+      "audio_score": 0.999745886788163,
+      "section": "replay",
+      "subsystem": "gameplay"
+    }
+  },
+  "sections": {
+    "procedural": {
+      "score": 0.0,
+      "weight": 0.2,
+      "subsystems": {
+        "memory": 0.0,
+        "comprehensive": 0.0,
+        "cpu": 0.0,
+        "timer": 0.0,
+        "halt_irq": 0.0,
+        "dma": 0.0
+      }
+    },
+    "replay": {
+      "score": 0.6574249511079391,
+      "weight": 0.6,
+      "subsystems": {
+        "gameplay": 0.6574249511079391
+      }
+    },
+    "audio": {
+      "score": 0.6048212014603606,
+      "weight": 0.2,
+      "subsystems": {
+        "game_audio": 0.700123565171349,
+        "psg": 0.5095188377493721
+      }
+    }
+  },
+  "overall": 0.5154192109568355
+}

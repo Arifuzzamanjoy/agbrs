@@ -1,0 +1,57 @@
+config: reference=reference/mesen.wasm
+candidate: v4 (118518 bytes)
+
+indexed 77 ROMs under "/work/gba-eval/results/.subset-v4-t/roms"
+corpus: 6 testcases
+
+── aw-thumb-alu (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v4 ─────────────────────────
+│ video: 0.9720  audio: —
+│ ✗ 24/400 frames diverge (first: 1)
+│   avg 1551 px/frame (4.04% of screen)
+│   worst: frame 4 (4042 px = 10.5%)
+└──────────────────────────────────────────────────
+── memory (procedural/memory) ──────────────────────────
+┌─ Mesen (cached) vs v4 ─────────────────────────
+│ video: 0.9833  audio: —
+│ ✗ 1/60 frames diverge (first: 0)
+│   avg 270 px/frame (0.70% of screen)
+│   worst: frame 0 (270 px = 0.7%)
+└──────────────────────────────────────────────────
+── mgba-dma (procedural/dma) ──────────────────────────
+┌─ Mesen (cached) vs v4 ─────────────────────────
+│ video: 0.9353  audio: —
+│ ✗ 374/600 frames diverge (first: 0)
+│   avg 1335 px/frame (3.48% of screen)
+│   worst: frame 0 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+── timer-reload (procedural/timer) ──────────────────────────
+┌─ Mesen (cached) vs v4 ─────────────────────────
+│ video: 0.7972  audio: —
+│ ✗ 60/60 frames diverge (first: 0)
+│   avg 6317 px/frame (16.45% of screen)
+│   worst: frame 0 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+── timer-start-stop (procedural/timer) ──────────────────────────
+┌─ Mesen (cached) vs v4 ─────────────────────────
+│ video: 0.8610  audio: —
+│ ✗ 60/60 frames diverge (first: 0)
+│   avg 5160 px/frame (13.44% of screen)
+│   worst: frame 0 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+── ppu-vram-mirror (procedural/halt_irq) ──────────────────────────
+┌─ Mesen (cached) vs v4 ─────────────────────────
+│ video: 0.9886  audio: —
+│ ✗ 16/1200 frames diverge (first: 0)
+│   avg 29619 px/frame (77.13% of screen)
+│   worst: frame 39 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+
+╔══════════════════════════════════════════════════════════╗
+║  OVERALL: 0.1200                                        ║
+╠══════════════════════════════════════════════════════════╣
+║  procedural   0.6000 ████████████░░░░░░░░
+║  replay       0.0000 ░░░░░░░░░░░░░░░░░░░░
+║  audio        0.0000 ░░░░░░░░░░░░░░░░░░░░
+╚══════════════════════════════════════════════════════════╝
+written to "/work/gba-eval/results/v4-t"

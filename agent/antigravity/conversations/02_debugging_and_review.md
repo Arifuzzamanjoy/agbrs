@@ -1,6 +1,6 @@
 # AI Engineering Conversation: Debugging, Evaluation & Review
 
-**Platform**: Google DeepMind Antigravity  
+**Platform**: Google Antigravity  
 **Participants**: Lead Architect, Reviewer Agent, Research Subagent  
 **Scope**: Grader execution, differential oracle debugging, bug fixes, and assessment alignment
 
@@ -49,7 +49,7 @@ Using differential execution comparison against the Mesen2 oracle:
 ## 3. Assessment Review & Deliverable Verification
 
 **Reviewer Agent**:
-Checking the repository against the take-home challenge requirements:
+Checking the repository against the evaluation challenge requirements:
 - **Clean Git History**: 14 commits detailing the incremental build and fixes.
 - **WASM Binary**: Verified standalone compilation to `wasm32-unknown-unknown` at `dist/gba_emu.wasm`.
 - **Reproducibility**: Complete rebuild instructions and Docker/Wasmtime grading steps documented in `docs/REPRODUCIBILITY.md`.

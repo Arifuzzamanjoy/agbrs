@@ -1,0 +1,198 @@
+config: reference=reference/mesen.wasm
+candidate: v13 (127303 bytes)
+
+indexed 77 ROMs under "corpus/roms"
+corpus: 27 testcases
+
+── aw-arm-alu (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✗ 4/600 frames diverge (first: 2)
+│   avg 25 px/frame (0.06% of screen)
+│   worst: frame 3 (44 px = 0.1%)
+└──────────────────────────────────────────────────
+── aw-arm-ldr-str (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✗ 5/600 frames diverge (first: 2)
+│   avg 23 px/frame (0.06% of screen)
+│   worst: frame 3 (44 px = 0.1%)
+└──────────────────────────────────────────────────
+── aw-arm-ldm-stm (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✗ 3/400 frames diverge (first: 2)
+│   avg 28 px/frame (0.07% of screen)
+│   worst: frame 3 (44 px = 0.1%)
+└──────────────────────────────────────────────────
+── aw-thumb-alu (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✗ 3/400 frames diverge (first: 2)
+│   avg 27 px/frame (0.07% of screen)
+│   worst: frame 3 (44 px = 0.1%)
+└──────────────────────────────────────────────────
+── aw-thumb-ldr-str (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✗ 3/500 frames diverge (first: 2)
+│   avg 28 px/frame (0.07% of screen)
+│   worst: frame 3 (44 px = 0.1%)
+└──────────────────────────────────────────────────
+── aw-thumb-ldm-stm (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✗ 3/500 frames diverge (first: 2)
+│   avg 28 px/frame (0.07% of screen)
+│   worst: frame 3 (44 px = 0.1%)
+└──────────────────────────────────────────────────
+── memory (procedural/memory) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✓ all 60 frames within pixel noise floor
+└──────────────────────────────────────────────────
+── mgba-io-read (procedural/memory) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 0.9953  audio: —
+│ ✗ 574/600 frames diverge (first: 2)
+│   avg 2048 px/frame (5.33% of screen)
+│   worst: frame 27 (2926 px = 7.6%)
+└──────────────────────────────────────────────────
+── mgba-shifter (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✗ 1/600 frames diverge (first: 2)
+│   avg 33 px/frame (0.09% of screen)
+│   worst: frame 2 (33 px = 0.1%)
+└──────────────────────────────────────────────────
+── mgba-carry (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✗ 1/600 frames diverge (first: 2)
+│   avg 33 px/frame (0.09% of screen)
+│   worst: frame 2 (33 px = 0.1%)
+└──────────────────────────────────────────────────
+── mgba-multiply-long (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 0.9969  audio: —
+│ ✗ 481/600 frames diverge (first: 2)
+│   avg 221 px/frame (0.57% of screen)
+│   worst: frame 120 (1747 px = 4.5%)
+└──────────────────────────────────────────────────
+── mgba-dma (procedural/dma) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✗ 365/600 frames diverge (first: 2)
+│   avg 22 px/frame (0.06% of screen)
+│   worst: frame 236 (1433 px = 3.7%)
+└──────────────────────────────────────────────────
+── timer-reload (procedural/timer) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 0.9111  audio: —
+│ ✗ 59/60 frames diverge (first: 1)
+│   avg 2018 px/frame (5.26% of screen)
+│   worst: frame 2 (2053 px = 5.3%)
+└──────────────────────────────────────────────────
+── timer-start-stop (procedural/timer) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✓ all 60 frames within pixel noise floor
+└──────────────────────────────────────────────────
+── dma-priority (procedural/dma) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✓ all 60 frames within pixel noise floor
+└──────────────────────────────────────────────────
+── ppu-vram-mirror (procedural/halt_irq) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✗ 3/1200 frames diverge (first: 0)
+│   avg 248 px/frame (0.65% of screen)
+│   worst: frame 76 (260 px = 0.7%)
+└──────────────────────────────────────────────────
+── celeste-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 1.0000  audio: 0.9882
+│ ✗ 492/7439 frames diverge (first: 2)
+│   avg 42 px/frame (0.11% of screen)
+│   worst: frame 2 (240 px = 0.6%)
+└──────────────────────────────────────────────────
+── spout-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 0.0626  audio: 0.7656
+│ ✗ 4199/4475 frames diverge (first: 271)
+│   avg 27710 px/frame (72.16% of screen)
+│   worst: frame 294 (38356 px = 99.9%)
+└──────────────────────────────────────────────────
+── heartwrench-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 0.9296  audio: 0.8999
+│ ✗ 2195/7326 frames diverge (first: 2761)
+│   avg 6496 px/frame (16.92% of screen)
+│   worst: frame 6741 (37704 px = 98.2%)
+└──────────────────────────────────────────────────
+── tonc-snd1 (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 0.9997  audio: 0.9997
+│ ✗ 1/60 frames diverge (first: 0)
+│   avg 240 px/frame (0.62% of screen)
+│   worst: frame 0 (240 px = 0.6%)
+└──────────────────────────────────────────────────
+── piugba-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 0.5628  audio: 0.7001
+│ ✗ 1475/1937 frames diverge (first: 354)
+│   avg 19311 px/frame (50.29% of screen)
+│   worst: frame 751 (35456 px = 92.3%)
+└──────────────────────────────────────────────────
+── waimanu-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 0.9999  audio: 0.9885
+│ ✗ 4/4086 frames diverge (first: 506)
+│   avg 372 px/frame (0.97% of screen)
+│   worst: frame 506 (720 px = 1.9%)
+└──────────────────────────────────────────────────
+── goodboy-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 0.9994  audio: 0.9237
+│ ✗ 554/5650 frames diverge (first: 79)
+│   avg 1457 px/frame (3.79% of screen)
+│   worst: frame 4766 (6193 px = 16.1%)
+└──────────────────────────────────────────────────
+── chip-advance-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 0.1158  audio: 0.0193
+│ ✗ 3283/3523 frames diverge (first: 1)
+│   avg 25231 px/frame (65.71% of screen)
+│   worst: frame 1694 (27052 px = 70.4%)
+└──────────────────────────────────────────────────
+── bulletgba-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 0.8242  audio: 0.8827
+│ ✗ 2375/4467 frames diverge (first: 3)
+│   avg 5656 px/frame (14.73% of screen)
+│   worst: frame 4181 (17733 px = 46.2%)
+└──────────────────────────────────────────────────
+── varooom-3d-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 0.6155  audio: 0.9968
+│ ✗ 7497/7976 frames diverge (first: 137)
+│   avg 6473 px/frame (16.86% of screen)
+│   worst: frame 4628 (19974 px = 52.0%)
+└──────────────────────────────────────────────────
+── collie-defense-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v13 ─────────────────────────
+│ video: 0.7901  audio: 0.9758
+│ ✗ 1352/6427 frames diverge (first: 141)
+│   avg 16152 px/frame (42.06% of screen)
+│   worst: frame 3265 (29697 px = 77.3%)
+└──────────────────────────────────────────────────
+
+╔══════════════════════════════════════════════════════════╗
+║  OVERALL: 0.6900                                        ║
+╠══════════════════════════════════════════════════════════╣
+║  procedural   0.5861 ████████████░░░░░░░░
+║  replay       0.7181 ██████████████░░░░░░
+║  audio        0.7096 ██████████████░░░░░░
+╚══════════════════════════════════════════════════════════╝
+written to "results/final-v13"

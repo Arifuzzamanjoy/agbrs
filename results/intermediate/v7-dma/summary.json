@@ -1,0 +1,62 @@
+{
+  "candidate": "v7",
+  "candidate_sha256": "1a6a5f5c151d1677247c96e70bbc642a670c842adfe1a778dcf205690a18c3c7",
+  "graded_at": "2026-11-07T12:47:10Z",
+  "per_testcase": {
+    "timer-start-stop": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "timer"
+    },
+    "mgba-dma": {
+      "video_score": 0.0005812105643633627,
+      "section": "procedural",
+      "subsystem": "dma"
+    },
+    "memory": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "memory"
+    },
+    "dma-priority": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "dma"
+    },
+    "ppu-vram-mirror": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "halt_irq"
+    }
+  },
+  "sections": {
+    "procedural": {
+      "score": 0.4100232484225746,
+      "weight": 0.2,
+      "subsystems": {
+        "memory": 1.0,
+        "timer": 1.0,
+        "dma": 0.5002906052821817,
+        "halt_irq": 1.0,
+        "cpu": 0.0,
+        "comprehensive": 0.0
+      }
+    },
+    "replay": {
+      "score": 0.0,
+      "weight": 0.6,
+      "subsystems": {
+        "gameplay": 0.0
+      }
+    },
+    "audio": {
+      "score": 0.0,
+      "weight": 0.2,
+      "subsystems": {
+        "game_audio": 0.0,
+        "psg": 0.0
+      }
+    }
+  },
+  "overall": 0.08200464968451493
+}

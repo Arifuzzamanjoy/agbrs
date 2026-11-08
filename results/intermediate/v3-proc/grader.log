@@ -1,0 +1,127 @@
+config: reference=reference/mesen.wasm
+candidate: v3 (117506 bytes)
+
+indexed 77 ROMs under "/work/gba-eval/results/.subset-v3-proc/roms"
+corpus: 16 testcases
+
+── aw-arm-alu (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v3 ─────────────────────────
+│ video: 0.9857  audio: —
+│ ✗ 14/600 frames diverge (first: 1)
+│   avg 2686 px/frame (6.99% of screen)
+│   worst: frame 12 (4101 px = 10.7%)
+└──────────────────────────────────────────────────
+── aw-arm-ldr-str (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v3 ─────────────────────────
+│ video: 0.9799  audio: —
+│ ✗ 21/600 frames diverge (first: 1)
+│   avg 2454 px/frame (6.39% of screen)
+│   worst: frame 84 (4062 px = 10.6%)
+└──────────────────────────────────────────────────
+── aw-arm-ldm-stm (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v3 ─────────────────────────
+│ video: 0.9733  audio: —
+│ ✗ 20/400 frames diverge (first: 1)
+│   avg 1919 px/frame (5.00% of screen)
+│   worst: frame 112 (4072 px = 10.6%)
+└──────────────────────────────────────────────────
+── aw-thumb-alu (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v3 ─────────────────────────
+│ video: 0.9720  audio: —
+│ ✗ 24/400 frames diverge (first: 1)
+│   avg 1551 px/frame (4.04% of screen)
+│   worst: frame 4 (4042 px = 10.5%)
+└──────────────────────────────────────────────────
+── aw-thumb-ldr-str (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v3 ─────────────────────────
+│ video: 0.9775  audio: —
+│ ✗ 28/500 frames diverge (first: 1)
+│   avg 1319 px/frame (3.43% of screen)
+│   worst: frame 4 (4042 px = 10.5%)
+└──────────────────────────────────────────────────
+── aw-thumb-ldm-stm (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v3 ─────────────────────────
+│ video: 0.9785  audio: —
+│ ✗ 32/500 frames diverge (first: 1)
+│   avg 1100 px/frame (2.87% of screen)
+│   worst: frame 4 (4042 px = 10.5%)
+└──────────────────────────────────────────────────
+── memory (procedural/memory) ──────────────────────────
+┌─ Mesen (cached) vs v3 ─────────────────────────
+│ video: 0.9833  audio: —
+│ ✗ 1/60 frames diverge (first: 0)
+│   avg 270 px/frame (0.70% of screen)
+│   worst: frame 0 (270 px = 0.7%)
+└──────────────────────────────────────────────────
+── mgba-io-read (procedural/memory) ──────────────────────────
+┌─ Mesen (cached) vs v3 ─────────────────────────
+│ video: 0.9810  audio: —
+│ ✗ 583/600 frames diverge (first: 0)
+│   avg 2760 px/frame (7.19% of screen)
+│   worst: frame 0 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+── mgba-shifter (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v3 ─────────────────────────
+│ video: 0.9868  audio: —
+│ ✗ 11/600 frames diverge (first: 0)
+│   avg 23284 px/frame (60.64% of screen)
+│   worst: frame 0 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+── mgba-carry (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v3 ─────────────────────────
+│ video: 0.9868  audio: —
+│ ✗ 10/600 frames diverge (first: 0)
+│   avg 25483 px/frame (66.36% of screen)
+│   worst: frame 0 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+── mgba-multiply-long (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v3 ─────────────────────────
+│ video: 0.9821  audio: —
+│ ✗ 490/600 frames diverge (first: 0)
+│   avg 739 px/frame (1.92% of screen)
+│   worst: frame 0 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+── mgba-dma (procedural/dma) ──────────────────────────
+┌─ Mesen (cached) vs v3 ─────────────────────────
+│ video: 0.9353  audio: —
+│ ✗ 374/600 frames diverge (first: 0)
+│   avg 1335 px/frame (3.48% of screen)
+│   worst: frame 0 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+── timer-reload (procedural/timer) ──────────────────────────
+┌─ Mesen (cached) vs v3 ─────────────────────────
+│ video: 0.2362  audio: —
+│ ✗ 60/60 frames diverge (first: 0)
+│   avg 8472 px/frame (22.06% of screen)
+│   worst: frame 0 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+── timer-start-stop (procedural/timer) ──────────────────────────
+┌─ Mesen (cached) vs v3 ─────────────────────────
+│ video: 0.8560  audio: —
+│ ✗ 60/60 frames diverge (first: 0)
+│   avg 5376 px/frame (14.00% of screen)
+│   worst: frame 0 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+── dma-priority (procedural/dma) ──────────────────────────
+┌─ Mesen (cached) vs v3 ─────────────────────────
+│ video: 0.9015  audio: —
+│ ✗ 6/60 frames diverge (first: 1)
+│   avg 5404 px/frame (14.07% of screen)
+│   worst: frame 1 (5404 px = 14.1%)
+└──────────────────────────────────────────────────
+── ppu-vram-mirror (procedural/halt_irq) ──────────────────────────
+┌─ Mesen (cached) vs v3 ─────────────────────────
+│ video: 0.6976  audio: —
+│ ✗ 1132/1200 frames diverge (first: 0)
+│   avg 3797 px/frame (9.89% of screen)
+│   worst: frame 39 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+
+╔══════════════════════════════════════════════════════════╗
+║  OVERALL: 0.0852                                        ║
+╠══════════════════════════════════════════════════════════╣
+║  procedural   0.4261 █████████░░░░░░░░░░░
+║  replay       0.0000 ░░░░░░░░░░░░░░░░░░░░
+║  audio        0.0000 ░░░░░░░░░░░░░░░░░░░░
+╚══════════════════════════════════════════════════════════╝
+written to "/work/gba-eval/results/v3-proc"

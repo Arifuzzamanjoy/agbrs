@@ -1,0 +1,47 @@
+{
+  "candidate": "v5",
+  "candidate_sha256": "3974faa68fceaf1c104f5b2c23663ed3f4c28bfa24656cd3c3e8a6d0c25856c3",
+  "graded_at": "2026-11-07T12:29:04Z",
+  "per_testcase": {
+    "timer-reload": {
+      "video_score": 7.718501366339815e-14,
+      "section": "procedural",
+      "subsystem": "timer"
+    },
+    "timer-start-stop": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "timer"
+    }
+  },
+  "sections": {
+    "replay": {
+      "score": 0.0,
+      "weight": 0.6,
+      "subsystems": {
+        "gameplay": 0.0
+      }
+    },
+    "procedural": {
+      "score": 0.06000000000000463,
+      "weight": 0.2,
+      "subsystems": {
+        "cpu": 0.0,
+        "comprehensive": 0.0,
+        "memory": 0.0,
+        "dma": 0.0,
+        "timer": 0.5000000000000386,
+        "halt_irq": 0.0
+      }
+    },
+    "audio": {
+      "score": 0.0,
+      "weight": 0.2,
+      "subsystems": {
+        "game_audio": 0.0,
+        "psg": 0.0
+      }
+    }
+  },
+  "overall": 0.012000000000000927
+}

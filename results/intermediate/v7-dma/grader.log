@@ -1,0 +1,44 @@
+config: reference=reference/mesen.wasm
+candidate: v7 (121971 bytes)
+
+indexed 77 ROMs under "/work/gba-eval/results/.subset-v7-dma/roms"
+corpus: 5 testcases
+
+── memory (procedural/memory) ──────────────────────────
+┌─ Mesen (cached) vs v7 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✓ all 60 frames within pixel noise floor
+└──────────────────────────────────────────────────
+── mgba-dma (procedural/dma) ──────────────────────────
+┌─ Mesen (cached) vs v7 ─────────────────────────
+│ video: 0.9896  audio: —
+│ ✗ 370/600 frames diverge (first: 2)
+│   avg 149 px/frame (0.39% of screen)
+│   worst: frame 237 (7045 px = 18.3%)
+└──────────────────────────────────────────────────
+── timer-start-stop (procedural/timer) ──────────────────────────
+┌─ Mesen (cached) vs v7 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✓ all 60 frames within pixel noise floor
+└──────────────────────────────────────────────────
+── dma-priority (procedural/dma) ──────────────────────────
+┌─ Mesen (cached) vs v7 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✓ all 60 frames within pixel noise floor
+└──────────────────────────────────────────────────
+── ppu-vram-mirror (procedural/halt_irq) ──────────────────────────
+┌─ Mesen (cached) vs v7 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✗ 3/1200 frames diverge (first: 0)
+│   avg 248 px/frame (0.65% of screen)
+│   worst: frame 76 (260 px = 0.7%)
+└──────────────────────────────────────────────────
+
+╔══════════════════════════════════════════════════════════╗
+║  OVERALL: 0.0820                                        ║
+╠══════════════════════════════════════════════════════════╣
+║  procedural   0.4100 ████████░░░░░░░░░░░░
+║  replay       0.0000 ░░░░░░░░░░░░░░░░░░░░
+║  audio        0.0000 ░░░░░░░░░░░░░░░░░░░░
+╚══════════════════════════════════════════════════════════╝
+written to "/work/gba-eval/results/v7-dma"

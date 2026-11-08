@@ -1,0 +1,29 @@
+config: reference=reference/mesen.wasm
+candidate: v5 (118955 bytes)
+
+indexed 77 ROMs under "/work/gba-eval/results/.subset-v5-t/roms"
+corpus: 2 testcases
+
+── timer-reload (procedural/timer) ──────────────────────────
+┌─ Mesen (cached) vs v5 ─────────────────────────
+│ video: 0.7972  audio: —
+│ ✗ 60/60 frames diverge (first: 0)
+│   avg 6317 px/frame (16.45% of screen)
+│   worst: frame 0 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+── timer-start-stop (procedural/timer) ──────────────────────────
+┌─ Mesen (cached) vs v5 ─────────────────────────
+│ video: 0.8683  audio: —
+│ ✗ 8/60 frames diverge (first: 0)
+│   avg 33689 px/frame (87.73% of screen)
+│   worst: frame 0 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+
+╔══════════════════════════════════════════════════════════╗
+║  OVERALL: 0.0120                                        ║
+╠══════════════════════════════════════════════════════════╣
+║  procedural   0.0600 █░░░░░░░░░░░░░░░░░░░
+║  replay       0.0000 ░░░░░░░░░░░░░░░░░░░░
+║  audio        0.0000 ░░░░░░░░░░░░░░░░░░░░
+╚══════════════════════════════════════════════════════════╝
+written to "/work/gba-eval/results/v5-t"

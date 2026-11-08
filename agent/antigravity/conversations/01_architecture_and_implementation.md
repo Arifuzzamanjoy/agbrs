@@ -1,6 +1,6 @@
 # AI Engineering Conversation: Architecture & Core Implementation
 
-**Platform**: Google DeepMind Antigravity  
+**Platform**: Google Antigravity  
 **Lead Agent**: Principal Systems Architect  
 **Scope**: Project scaffolding, ARM7TDMI CPU, Memory Bus, PPU, DMA, APU, and WASM C-ABI
 

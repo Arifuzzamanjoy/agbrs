@@ -9,7 +9,7 @@ This document tracks significant design choices, intermediate hypotheses, failed
 ### Decision 1: Pure State Encapsulation vs Global Statics
 - **Initial Thought**: Use direct `static mut` arrays for ROM, RAM, VRAM, and CPU registers to simplify pointer returns to the C-ABI.
 - **Problem**: Caused state pollution across consecutive `emu_reset()` and `emu_load_rom()` cycles, violating test harness determinism.
-- **Solution**: Encapsulated the entire system state into an owned struct `Gba` (`src/gba.rs`). The C-ABI in `src/lib.rs` holds a single `Option<Box<Gba>>` that is safely recreated on reset. Large buffers (`rom_buffer`, `audio_buffer`) use heap allocation (`Vec` and `Box`) to avoid stack overflows and static bloat.
+- **Solution**: Encapsulated the entire system state into an owned struct `Gba` (`src/gba.rs`). The C-ABI in `src/lib.rs` keeps one `static mut GBA: Option<Box<Gba>>`, created in `emu_init()`; `emu_reset()` and `emu_load_rom()` reset that struct in place, so no state lives outside it. Large buffers (`rom_buffer`, `audio_buffer`) use heap allocation (`Vec` and `Box`) to avoid stack overflows and static bloat.
 
 ### Decision 2: CPU Pipeline Simulation
 - **Initial Thought**: Single-cycle instruction fetch and immediate execution without modeling the ARM7TDMI 3-stage fetch-decode-execute pipeline.
@@ -42,13 +42,33 @@ This document tracks significant design choices, intermediate hypotheses, failed
 - **Symptom**: Arithmetic and logical shifts using a register operand (`LSL Rs`, `ASR Rs`) produced incorrect results when `Rs = R15` or `Rm = R15`.
 - **Hypothesis**: ALU shift logic was mishandling shift counts ≥ 32.
 - **Root Cause**: On ARM7TDMI, when a register-specified shift is used, an internal cycle is spent reading the shift amount. During this extra cycle, the PC has advanced an extra instruction (+12 instead of +8).
-- **Fix**: Updated `src/cpu/arm.rs` so that register-specified shifts treat `R15` operand reads as PC + 12 (Commit `5fd7684`).
+- **Fix**: Updated `src/cpu/arm.rs` so that register-specified shifts treat `R15` operand reads as PC + 12. *(An earlier version of this file cited commit `5fd7684`; no such commit exists. The initial work was committed as a single commit (`f52c41d`, `228706c` in the transcripts); see `HANDOFF.md` "Repository history".)*
 
 ---
 
-## 3. Preserved Known Limitations (Active Backlog)
+## 3. 2026-11-07 pass (Claude Code): approach changes and failed attempts
 
-1. **Timer Latching Edge Cases**: The reload and start/stop latch latency currently does not match sub-cycle timing, causing `timer-reload` and `timer-start-stop` to fail.
-2. **HBlank DMA Cycle Alignment**: HBlank DMA fires at scanline boundary instead of exact cycle 1006, causing replay desync in games that perform palette swaps mid-scanline.
-3. **APU PSG Sweep & Envelope Accuracy**: Sound channel envelopes currently step on simplified intervals rather than cycle-exact 64Hz/256Hz dividers, resulting in low audio log-mel scores.
+Full detail is in the transcript (`agent/transcripts/claude-code/02b30b4e-….md`)
+and every graded build is in `results/`. Main changes of approach:
 
+- **From reading code to measuring against the reference.** Early fixes were
+  guided by grader scores alone. After frame 0 of every replay differed, the
+  agent built an oracle frame-diff loop, and later `tools/lockstep`, which
+  steps `reference/mesen.wasm` beside our core and stops at the first PC or
+  cycle divergence. Most timing rules in `docs/TIMING_MODEL.md` came from it.
+- **Regression: v6-full (0.284 overall, below the 0.379 baseline).** Adding
+  waitstate-accurate memory timing fixed procedural tests (0.43 → 0.59) but
+  replay dropped 0.46 → 0.19, because frames were still cut at line 0 and
+  boot frames were reported as 0, so every replay was phase-shifted against
+  the reference. Fixing frame/boot alignment produced v8 (0.566).
+- **Suspicious identical scores (v10-full).** v10 scored the same as v8 to
+  four decimals despite large timing changes. Checking showed the binaries
+  differed, and the real cause was input latency: keys took effect one frame
+  early. Latching keys at the frame boundary (v11) took goodboy from ~840 to
+  48 differing frames of 900.
+- **Subset runs that scored low by design.** `v3-proc`, `v4-t`, `v5-t`,
+  `v7-dma`, `v9-proc`, `v10-io` graded only a few testcases, so their
+  "overall" is not comparable to full runs. `v5-games` was stopped before it
+  wrote a summary.
+- **Left unfinished:** mgba-dma (1248/1256 subtests), timer-reload,
+  mgba-io-read, VRAM contention. See `HANDOFF.md`.

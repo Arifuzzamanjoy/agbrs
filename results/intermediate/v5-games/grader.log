@@ -1,0 +1,6 @@
+config: reference=reference/mesen.wasm
+candidate: v5 (118955 bytes)
+
+indexed 77 ROMs under "/work/gba-eval/results/.subset-v5-games/roms"
+corpus: 11 testcases
+

@@ -1,0 +1,117 @@
+{
+  "candidate": "v3",
+  "candidate_sha256": "779c0c2cb9592d03c635bb137d6767a0e8055f84b0afcf19e3d45e5f432d79cd",
+  "graded_at": "2026-11-07T12:21:09Z",
+  "per_testcase": {
+    "ppu-vram-mirror": {
+      "video_score": 1.4636172764406895e-14,
+      "section": "procedural",
+      "subsystem": "halt_irq"
+    },
+    "mgba-io-read": {
+      "video_score": 1.3999059609327717e-6,
+      "section": "procedural",
+      "subsystem": "memory"
+    },
+    "aw-thumb-ldr-str": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "cpu"
+    },
+    "mgba-carry": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "cpu"
+    },
+    "timer-start-stop": {
+      "video_score": 5.628097565437776e-13,
+      "section": "procedural",
+      "subsystem": "timer"
+    },
+    "memory": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "memory"
+    },
+    "aw-arm-alu": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "cpu"
+    },
+    "aw-thumb-ldm-stm": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "cpu"
+    },
+    "timer-reload": {
+      "video_score": 2.7561764841325496e-15,
+      "section": "procedural",
+      "subsystem": "timer"
+    },
+    "mgba-dma": {
+      "video_score": 0.00004148725678240887,
+      "section": "procedural",
+      "subsystem": "dma"
+    },
+    "mgba-multiply-long": {
+      "video_score": 0.000017382629367735252,
+      "section": "procedural",
+      "subsystem": "cpu"
+    },
+    "mgba-shifter": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "cpu"
+    },
+    "aw-thumb-alu": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "cpu"
+    },
+    "aw-arm-ldm-stm": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "cpu"
+    },
+    "aw-arm-ldr-str": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "cpu"
+    },
+    "dma-priority": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "dma"
+    }
+  },
+  "sections": {
+    "procedural": {
+      "score": 0.42611355158550696,
+      "weight": 0.2,
+      "subsystems": {
+        "memory": 0.5000006999529805,
+        "timer": 2.827829665139551e-13,
+        "cpu": 0.8888908202921519,
+        "halt_irq": 1.4636172764406895e-14,
+        "comprehensive": 0.0,
+        "dma": 0.5000207436283912
+      }
+    },
+    "audio": {
+      "score": 0.0,
+      "weight": 0.2,
+      "subsystems": {
+        "game_audio": 0.0,
+        "psg": 0.0
+      }
+    },
+    "replay": {
+      "score": 0.0,
+      "weight": 0.6,
+      "subsystems": {
+        "gameplay": 0.0
+      }
+    }
+  },
+  "overall": 0.0852227103171014
+}

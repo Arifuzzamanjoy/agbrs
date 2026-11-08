@@ -45,7 +45,7 @@ Used the grader and oracle tools to identify failing tests and fix specific issu
 
 ```
 src/
-├── lib.rs          # WASM ABI exports (10 C-ABI functions)
+├── lib.rs          # WASM ABI exports (10 required + emu_boot_frames + 3 debug)
 ├── gba.rs          # Top-level Gba struct, frame loop
 ├── cpu/
 │   ├── mod.rs      # Pipeline, mode switching, interrupt handling
@@ -56,7 +56,7 @@ src/
 ├── bus/
 │   ├── mod.rs      # Memory map, read/write dispatch
 │   ├── io.rs       # IO register bitfield constants
-│   └── waitstates.rs # ROM waitstate configuration
+│   └── waitstates.rs # Memory waitstate table (WAITCNT)
 ├── ppu/
 │   └── mod.rs      # Scanline renderer, all BG modes, sprites
 ├── dma/
@@ -67,24 +67,37 @@ src/
     └── mod.rs      # PSG + DirectSound FIFO audio
 ```
 
-Total: ~4,500 lines of Rust.
+Total: ~5,600 lines of Rust in `src/` (plus ~270 in `tools/lockstep`).
 
 ## 2026-11-07 pass: timing, audio and differential testing
 
-This pass was done with Claude Code (model: Claude Opus 5.5) driven by the
-repository owner. Goal: check the repo against the take-home requirements,
+I did this pass with Claude Code (model: Claude Opus 5.5). Goal: check the repo against the evaluation requirements,
 find why the score was low, and raise it with validated changes.
+
+**How I worked with the agent.** My prompts are short and informal, and
+they are kept verbatim in the transcripts, typos included. The first one
+gives the agent the brief and the repo and asks three things: does the code
+meet the brief, why is the score low, and which better methods exist,
+implemented with validation. I kept it open-ended so the agent would work
+out the plan from the brief and the grader itself. My part was steering and
+review: I read the diffs in my IDE and the grading results as they came in,
+rather than writing long prompts. The later prompts are about re-checking
+the brief and pushing. Commits use a plain style without the client's
+automatic `Co-Authored-By` line (my prompts ask for that), because the AI
+use is disclosed in full here and in `agent/` rather than per commit. A
+cleaned-up version of the same prompt sequence, usable as a template, is in
+[`agent/claude-code/PROMPT_PLAYBOOK.md`](agent/claude-code/PROMPT_PLAYBOOK.md).
 
 ### Score (gba-eval grader, native build, reference = bundled Mesen2)
 
 | Run | Overall | Replay (60%) | Procedural (20%) | Audio (20%) |
 |---|---|---|---|---|
-| Baseline (`dist/` wasm at commit e549c6a) | 0.3789 | 0.4606 | 0.4261 | 0.0865 |
+| Baseline (`dist/` wasm as first committed, sha256 9608c373…) | 0.3789 | 0.4606 | 0.4261 | 0.0865 |
 | Intermediate (v8: APU rewrite, access timing, frame/boot alignment) | 0.5655 | 0.5537 | 0.5861 | 0.5802 |
 | v11 (+ lockstep-derived IRQ/DMA/prefetch rules, input latching) | 0.6775 | 0.7137 | 0.5861 | 0.6605 |
 | **Final** (`dist/gba_emu.wasm`, sha256 b2705a31…) | **0.6900** | **0.7181** | **0.5861** | **0.7096** |
 
-Per-testcase tables: `results/` (baseline, v8, final), produced by
+Per-testcase tables: `results/` (baseline, v8, v11, final), produced by
 `tools/scores.py`.
 
 ### What was wrong (root causes found)
@@ -144,73 +157,79 @@ mgba-io-read (48/130), mgba-dma (1248/1256).
 4. Remaining procedural tests (timer reload, multiply-long carry, I/O
    read-back) — each is pass/fail and worth ~0.01-0.02 overall.
 
-## Results before this pass (original handoff)
+## Repository history
 
-Overall score: **0.3789** (Replay: 0.4606, Procedural: 0.4261, Audio: 0.0865).
-See `results/summary.json` for full per-testcase breakdowns.
+The history is the one the work was actually committed with, in a private
+working repository that was later published as this one:
 
-### Tests passing at 1.0 (perfect match vs Mesen2):
-- aw-arm-alu, aw-arm-ldr-str, aw-arm-ldm-stm
-- aw-thumb-alu, aw-thumb-ldr-str, aw-thumb-ldm-stm
-- memory, dma-priority, mgba-carry, mgba-shifter
+| Commit | In transcripts | What |
+|---|---|---|
+| `f52c41d` | `228706c` | Initial implementation (Antigravity phase), committed as one commit |
+| `98de5e2` | `e549c6a` | First handoff docs, baseline wasm (0.3789); its results and limitations are superseded by the 2026-11-07 pass above |
+| `f19e5d8` | `e84af87` | 2026-11-07 timing/APU pass with Claude Code (0.6900) |
+| latest | — | Handoff completion: transcripts, all grading runs, logs, doc fixes |
 
-### Games running:
-- BulletGBA: 0.9934 video SSIM / 0.5645 audio
-- Goodboy Advance: 0.9190 video SSIM
-- tonc-snd1: 0.9833 video
-- Collie Defense: 0.7872 video
-- PIU GBA: 0.5011 video
-- Waimanu, Spout: running with partial sync
+The initial implementation was not committed step by step, so the history
+cannot show its intermediate states; `docs/DECISIONS_AND_FAILURES.md`
+describes them instead. Between `f19e5d8` and the last commit, a few
+packaging commits in the working repo were squashed: they added the
+transcripts before the take-home brief in them was redacted, and that
+version should not be republished.
 
-## Known Limitations
+The author e-mail on the first two commits was changed to my GitHub address
+before publishing. That changes every hash, so the transcripts (recorded
+before the change) cite the hashes in the second column; contents, messages
+and dates are unchanged.
 
-1. **Score below baseline** — the 0.53 baseline has tighter edge-case handling on timers and cycle alignment
-2. **Timer tests failing** — timer reload/start-stop tests need more precise cycle-level timing of when timer values latch
-3. **mgba-multiply-long, mgba-dma** — each has minor flag and open-bus edge cases
-4. **ppu-vram-mirror** — VRAM mirroring in the upper 32KB region needs fine-tuning for Mode 3
-5. **Replay sync drift** — Celeste, Varooom 3D, and Heartwrench desync after early frames, likely due to subtle interrupt latency or HBlank DMA timing differences
-6. **Audio quality is low** — PSG envelope and sweep aren't fully accurate, FIFO sample timing has slight drift
+An earlier push of this repository had the initial commit split into
+per-subsystem commits for readability. It was replaced by the real history
+above, so any other commit hashes seen for this project refer to that
+version.
 
-## What I'd Work On Next
+## Build, grade and deliverables
 
-In priority order (by expected score impact):
-
-1. **Fix timer latch timing** — timer-reload and timer-start-stop are 0.0; cycle-accurate latching will boost procedural score significantly
-2. **HBlank DMA timing** — many gameplay replays desync because DMA doesn't fire at the exact cycle boundaries expected by games
-3. **Interrupt delivery latency** — ppu-vram-mirror and game input loops depend on precise IRQ servicing delay
-4. **Audio envelope accuracy** — PSG channel sweep/envelope timing affects audio scores across all 9 audio testcases
-5. **Prefetch buffer emulation** — some commercial/homebrew titles rely on ROM waitstate prefetch timing
-
-## Build & Grade
-
-See [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) for complete instructions.
-
-```bash
-# build
-rustup target add wasm32-unknown-unknown
-cargo build --release --lib --target wasm32-unknown-unknown
-
-# the wasm output
-ls target/wasm32-unknown-unknown/release/gba_emu.wasm
-
-# grade (requires gba-eval repo)
-cd /path/to/gba-eval
-./quickstart/grade.sh /path/to/agbrs/dist/gba_emu.wasm my-run
-cat results/my-run/summary.json
-```
-
-## AI Orchestration & Process Deliverables
-
-Detailed logs, prompts, and failure records requested for the evaluation handoff:
-- **Reproduction Guide**: [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md)
-- **Decisions & Failed Attempts**: [`docs/DECISIONS_AND_FAILURES.md`](docs/DECISIONS_AND_FAILURES.md)
-- **Workflow & Environment Metadata**: [`docs/WORKFLOW_METADATA.md`](docs/WORKFLOW_METADATA.md)
-- **Agent Prompts & Transcripts**: [`agent/antigravity/`](agent/antigravity/)
-- **Compiled WASM Artifact**: [`dist/gba_emu.wasm`](dist/gba_emu.wasm)
+Build and grading steps: [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md).
+Where each requested deliverable is: the table in [`README.md`](README.md).
 
 ## Tools Used
 
-- **Editor & Orchestration**: Google DeepMind Antigravity framework
-- **AI Models**: Claude 3.5 Sonnet / Gemini 1.5 Pro / Claude Opus for implementation guidance, debugging, and code review
+- **2026-11-07 pass**: Claude Code 2.1.317 with Claude Opus 5.5 (`claude-opus-5-5`), single agent, no subagents — see `agent/claude-code/`
+- **Initial implementation**: Google Antigravity, with Claude Opus 4.6 / Gemini 3.8 Flash for implementation, debugging and review (from memory; no logs from that phase exist)
 - **Reference**: GBATEK (Martin Korth), ARM7TDMI datasheet, gba-eval oracle tool
 - **Testing**: gba-eval grader + oracle for differential frame comparison against Mesen2
+
+## Disclosures
+
+- **Prior experience with GBA Eval**: I had read about gba-eval before
+  this take-home, but had not used it, had not looked at the published
+  attempts (`mechanize-work/gba-eval-attempts`), and had not built or
+  worked on a GBA or any other emulator. The Claude Code transcripts show
+  the agent read only the gba-eval README mention of `gba-eval-attempts`;
+  it did not open those repositories.
+- **`src/bus/waitstates.rs` and Mesen2**: the file's header says it is
+  "mirroring Mesen2's GbaWaitStates". Only the idea and name were borrowed
+  (a precomputed lookup table of access cycles per region, rebuilt when
+  WAITCNT changes). The cycle values are GBATEK's: WS0 5/3, WS1 5/5,
+  WS2 5/9, SRAM 5 (wait states + 1) at reset, and no Mesen2 code was
+  copied.
+- **Outside sources read during the 2026-11-07 pass** (all visible in the
+  transcripts): GBATEK and similar hardware documentation; the C sources of
+  the NanoBoyAdvance *hardware test ROMs* (`nba-emu/hw-test`, timer tests)
+  that the corpus itself uses, to learn what each test checks; web search
+  results describing emulators. No emulator source code was copied.
+  `reference/mesen.wasm` (the grader's reference) was run as a black box by
+  `tools/lockstep` to compare CPU state and timing; its source was not read.
+
+## Omissions, unavailable items and external dependencies
+
+| Item | Status |
+|---|---|
+| Raw Antigravity conversation exports (initial implementation) | **Not included.** `agent/antigravity/conversations/` holds condensed write-ups and summaries, not exports. |
+| Take-home brief pasted into my prompts | Shown as a `[redacted: take-home brief …]` marker in the transcripts; a paraphrased version of the prompts is in `agent/claude-code/PROMPT_PLAYBOOK.md`. |
+| Later Claude Code sessions about packaging only (git push help, transcript formatting, repo publishing; 2026-11-07 16:17 → 2026-11-08) | Not exported: they contain no emulator work. |
+| Model usage / cost for the Antigravity phase | Not available. |
+| Claude Code usage | Token counts per session in `agent/transcripts/claude-code/usage.json`; dollar cost not recorded. |
+| Grader screenshots/WAVs (`*.cand.png`, `*.ref.wav`, ...) | Not committed (size). Regenerate with `tools/grade.sh`. |
+| gba-eval harness, corpus ROMs, reference caches, `reference/mesen.wasm` | Not vendored. Public: `github.com/mechanize-work/gba-eval` (needs Git LFS). |
+| Network services | None needed to build or run. Grading needs the gba-eval checkout; Docker is optional (native path in `docs/REPRODUCIBILITY.md` §5). |
+| Credentials and private information | None in the repo. Personal and unrelated details in the transcripts are replaced by `[redacted-…]` markers. |

@@ -1,0 +1,198 @@
+config: reference=reference/mesen.wasm
+candidate: v10 (121934 bytes)
+
+indexed 77 ROMs under "corpus/roms"
+corpus: 27 testcases
+
+── aw-arm-alu (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✗ 4/600 frames diverge (first: 2)
+│   avg 25 px/frame (0.06% of screen)
+│   worst: frame 3 (44 px = 0.1%)
+└──────────────────────────────────────────────────
+── aw-arm-ldr-str (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.9909  audio: —
+│ ✗ 12/600 frames diverge (first: 2)
+│   avg 2873 px/frame (7.48% of screen)
+│   worst: frame 84 (6551 px = 17.1%)
+└──────────────────────────────────────────────────
+── aw-arm-ldm-stm (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✗ 11/400 frames diverge (first: 2)
+│   avg 18 px/frame (0.05% of screen)
+│   worst: frame 3 (44 px = 0.1%)
+└──────────────────────────────────────────────────
+── aw-thumb-alu (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.9871  audio: —
+│ ✗ 16/400 frames diverge (first: 2)
+│   avg 1523 px/frame (3.97% of screen)
+│   worst: frame 163 (5828 px = 15.2%)
+└──────────────────────────────────────────────────
+── aw-thumb-ldr-str (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✗ 19/500 frames diverge (first: 2)
+│   avg 16 px/frame (0.04% of screen)
+│   worst: frame 3 (44 px = 0.1%)
+└──────────────────────────────────────────────────
+── aw-thumb-ldm-stm (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.9906  audio: —
+│ ✗ 24/500 frames diverge (first: 2)
+│   avg 858 px/frame (2.23% of screen)
+│   worst: frame 263 (4953 px = 12.9%)
+└──────────────────────────────────────────────────
+── memory (procedural/memory) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✓ all 60 frames within pixel noise floor
+└──────────────────────────────────────────────────
+── mgba-io-read (procedural/memory) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.9945  audio: —
+│ ✗ 576/600 frames diverge (first: 2)
+│   avg 2046 px/frame (5.33% of screen)
+│   worst: frame 25 (3946 px = 10.3%)
+└──────────────────────────────────────────────────
+── mgba-shifter (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.9978  audio: —
+│ ✗ 8/600 frames diverge (first: 2)
+│   avg 884 px/frame (2.30% of screen)
+│   worst: frame 85 (3906 px = 10.2%)
+└──────────────────────────────────────────────────
+── mgba-carry (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.9973  audio: —
+│ ✗ 9/600 frames diverge (first: 2)
+│   avg 1093 px/frame (2.85% of screen)
+│   worst: frame 103 (5788 px = 15.1%)
+└──────────────────────────────────────────────────
+── mgba-multiply-long (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.9961  audio: —
+│ ✗ 489/600 frames diverge (first: 2)
+│   avg 222 px/frame (0.58% of screen)
+│   worst: frame 115 (4002 px = 10.4%)
+└──────────────────────────────────────────────────
+── mgba-dma (procedural/dma) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.9969  audio: —
+│ ✗ 376/600 frames diverge (first: 2)
+│   avg 51 px/frame (0.13% of screen)
+│   worst: frame 235 (5003 px = 13.0%)
+└──────────────────────────────────────────────────
+── timer-reload (procedural/timer) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.9111  audio: —
+│ ✗ 59/60 frames diverge (first: 1)
+│   avg 2018 px/frame (5.26% of screen)
+│   worst: frame 2 (2053 px = 5.3%)
+└──────────────────────────────────────────────────
+── timer-start-stop (procedural/timer) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✓ all 60 frames within pixel noise floor
+└──────────────────────────────────────────────────
+── dma-priority (procedural/dma) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✓ all 60 frames within pixel noise floor
+└──────────────────────────────────────────────────
+── ppu-vram-mirror (procedural/halt_irq) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✗ 3/1200 frames diverge (first: 0)
+│   avg 248 px/frame (0.65% of screen)
+│   worst: frame 76 (260 px = 0.7%)
+└──────────────────────────────────────────────────
+── celeste-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.2035  audio: 0.7955
+│ ✗ 7161/7439 frames diverge (first: 2)
+│   avg 7447 px/frame (19.39% of screen)
+│   worst: frame 4461 (12733 px = 33.2%)
+└──────────────────────────────────────────────────
+── spout-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.0624  audio: 0.1987
+│ ✗ 4247/4475 frames diverge (first: 81)
+│   avg 27409 px/frame (71.38% of screen)
+│   worst: frame 294 (38356 px = 99.9%)
+└──────────────────────────────────────────────────
+── heartwrench-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.7087  audio: 0.7801
+│ ✗ 5643/7326 frames diverge (first: 84)
+│   avg 9169 px/frame (23.88% of screen)
+│   worst: frame 181 (38331 px = 99.8%)
+└──────────────────────────────────────────────────
+── tonc-snd1 (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.9997  audio: 0.9997
+│ ✗ 1/60 frames diverge (first: 0)
+│   avg 240 px/frame (0.62% of screen)
+│   worst: frame 0 (240 px = 0.6%)
+└──────────────────────────────────────────────────
+── piugba-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.5279  audio: 0.0626
+│ ✗ 1785/1937 frames diverge (first: 80)
+│   avg 16692 px/frame (43.47% of screen)
+│   worst: frame 751 (36840 px = 95.9%)
+└──────────────────────────────────────────────────
+── waimanu-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.9674  audio: 0.8976
+│ ✗ 2671/4086 frames diverge (first: 277)
+│   avg 847 px/frame (2.21% of screen)
+│   worst: frame 505 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+── goodboy-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.7753  audio: 0.6808
+│ ✗ 5258/5650 frames diverge (first: 70)
+│   avg 6376 px/frame (16.60% of screen)
+│   worst: frame 109 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+── chip-advance-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.0926  audio: 0.0057
+│ ✗ 3410/3523 frames diverge (first: 1)
+│   avg 27939 px/frame (72.76% of screen)
+│   worst: frame 176 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+── bulletgba-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.5644  audio: 0.7633
+│ ✗ 4310/4467 frames diverge (first: 3)
+│   avg 9873 px/frame (25.71% of screen)
+│   worst: frame 4378 (14408 px = 37.5%)
+└──────────────────────────────────────────────────
+── varooom-3d-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.4856  audio: 0.7518
+│ ✗ 7572/7976 frames diverge (first: 73)
+│   avg 9077 px/frame (23.64% of screen)
+│   worst: frame 340 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+── collie-defense-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.7038  audio: 0.7705
+│ ✗ 5404/6427 frames diverge (first: 58)
+│   avg 4306 px/frame (11.21% of screen)
+│   worst: frame 59 (38329 px = 99.8%)
+└──────────────────────────────────────────────────
+
+╔══════════════════════════════════════════════════════════╗
+║  OVERALL: 0.5655                                        ║
+╠══════════════════════════════════════════════════════════╣
+║  procedural   0.5861 ████████████░░░░░░░░
+║  replay       0.5537 ███████████░░░░░░░░░
+║  audio        0.5802 ████████████░░░░░░░░
+╚══════════════════════════════════════════════════════════╝
+written to "results/v10-full"

@@ -6,17 +6,12 @@ This document provides step-by-step instructions to independently compile, verif
 
 ## 1. Prerequisites & Toolchain
 
-The emulator core is written in pure Rust (edition 2021) with zero third-party crate dependencies to ensure deterministic compilation and zero host-level vulnerabilities.
+The emulator core is written in pure Rust (edition 2021) with no third-party crate dependencies, so the build needs nothing beyond the pinned toolchain.
 
-- **Rust**: 1.80+ (Tested on `rustc 1.99.1`)
+- **Rust**: `rustc 1.99.1`, pinned by `rust-toolchain.toml` (rustup installs it and the wasm target automatically)
 - **Cargo**: Corresponding version (Tested on `cargo 1.99.1`)
 - **Wasm Target**: `wasm32-unknown-unknown`
 - **Harness Environment**: Linux x86_64, Git LFS (for reference caches), Docker / Wasmtime
-
-### Install Target
-```bash
-rustup target add wasm32-unknown-unknown
-```
 
 ---
 
@@ -54,12 +49,11 @@ The repository includes sanity and smoke test harnesses:
 cargo test
 ```
 
-Expected output:
-```
-running 1 test
-test test_smoke ... ok
-test result: ok. 1 passed; 0 failed; 0 ignored
-```
+Expected: 9 tests pass (1 smoke test in `tests/debug_test.rs`, 8 regression
+tests in `tests/regressions.rs`, which pin down behaviours fixed in the
+2026-11-07 pass: branch-to-same-PC, HALT, VRAM mirror hole, ROM open bus,
+BIOS read protection, PSG pitch, timer start/stop latency). A recorded run
+is in `results/logs/cargo-test.txt`.
 
 ---
 
@@ -118,7 +112,8 @@ python3 tools/scores.py ../gba-eval/results/my-run            # per-test table
 ```
 
 Memory: each grader worker holds two emulator instances plus reference
-caches. On an 8 GB host, `RAYON_NUM_THREADS` > 2 was OOM-killed; the
+caches. On an 8 GB host, `RAYON_NUM_THREADS` > 2 was OOM-killed, and 2
+can be too when other processes use memory, so 1 is the safe choice; the
 `tools/grade.sh` third argument sets the thread count (1 thread ≈ 28 min
 for all 27 testcases, 2 threads ≈ 15 min).
 
@@ -142,11 +137,3 @@ Note: the oracle CLI does not drain audio during its 6 boot frames and the
 reference's buffer caps at 2048 pairs, so its WAV is missing ~1086 samples
 at the start compared with what the grader sees. Skip 2048 samples (not
 6 frames' worth) when aligning against our `--wav` output.
-
-### Unit / regression tests
-```bash
-cargo test --release
-```
-`tests/regressions.rs` pins down behaviours fixed in the timing/audio pass
-(branch-to-same-PC pipeline bug, HALT, VRAM mirror hole, ROM open bus,
-BIOS read protection, PSG pitch, timer start/stop latency).

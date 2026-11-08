@@ -1,0 +1,31 @@
+{
+  "02b30b4e-600f-4585-ac58-ba7f06db074a": {
+    "first_event": "2026-11-07T11:40:38.283Z",
+    "last_event": "2026-11-07T16:03:54.897Z",
+    "assistant_messages_by_model": {
+      "claude-opus-5-5": 816,
+      "<synthetic>": 2
+    },
+    "tokens": {
+      "input_tokens": 1678,
+      "cache_creation_input_tokens": 1500058,
+      "cache_read_input_tokens": 292885466,
+      "output_tokens": 927208
+    },
+    "sidechain_events": 0
+  },
+  "01dfc9aa-7822-48ad-9e5d-c1c7d6557493": {
+    "first_event": "2026-11-07T16:05:55.463Z",
+    "last_event": "2026-11-07T16:14:16.085Z",
+    "assistant_messages_by_model": {
+      "claude-opus-5-5": 62
+    },
+    "tokens": {
+      "input_tokens": 128,
+      "cache_creation_input_tokens": 180558,
+      "cache_read_input_tokens": 5779819,
+      "output_tokens": 59196
+    },
+    "sidechain_events": 0
+  }
+}

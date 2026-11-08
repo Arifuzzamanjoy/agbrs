@@ -2,6 +2,8 @@
 name = "gba_emu"
 version = "0.1.0"
 edition = "2021"
+description = "Game Boy Advance emulator core for the gba-eval wasm ABI"
+license = "Apache-2.0"
 
 [lib]
 crate-type = ["cdylib", "rlib"]

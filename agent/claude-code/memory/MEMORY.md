@@ -1,0 +1,1 @@
+- [GBA take-home state](gba-takehome-state.md) — grading setup, lockstep tool, score history, open timing gaps

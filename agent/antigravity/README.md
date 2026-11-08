@@ -1,6 +1,14 @@
 # Antigravity Agent Configuration & Orchestration
 
-This directory preserves the AI prompts, subagent configurations, and conversation transcripts used during the engineering of the GBA emulator.
+This directory preserves the AI prompts, subagent configurations, and conversation summaries from the initial implementation of the GBA emulator.
+
+> **Note:** the files in `conversations/` are condensed write-ups, not raw
+> exports, and some details in them do not match the repository: the
+> commit `5fd7684` and the "14 commits" they mention never existed (see
+> `HANDOFF.md` "Repository history"). Raw Antigravity exports
+> are not included. Raw transcripts exist only for the later Claude
+> Code work: see [`../claude-code/`](../claude-code/README.md) and
+> [`../transcripts/claude-code/`](../transcripts/claude-code/).
 
 ---
 
@@ -21,8 +29,10 @@ agent/antigravity/
 
 ## Agent Architecture
 
-We utilized **Google DeepMind Antigravity**, an autonomous agentic pair-programming framework equipped with:
-- **Lead Architect Agent**: Manages the development roadmap, writes code, edits files, and executes builds.
-- **Background Research Subagents**: Spawned asynchronously to read external specifications, cross-reference documentation (e.g. GBATEK, ABI.md), and analyze evaluation harnesses without interrupting active code compilation.
-- **Deterministic Sandboxing**: Executes strictly within the project boundary with no external network access or side effects.
+The initial implementation was written with **Google Antigravity** (an agentic coding IDE):
+- one main agent that planned the work, edited code and ran builds, driven by the prompt in `prompts/01_master_system_prompt.md`
+- research subagents, set up with `prompts/02_subagent_research.md`, for reading GBATEK, gba-eval's `spec/ABI.md` and its harness
+
+There are no raw logs from this phase, so the model names and setup above
+are as I remember them and cannot be checked against a record.
 

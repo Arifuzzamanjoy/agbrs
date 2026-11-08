@@ -1,0 +1,93 @@
+{
+  "candidate": "v1",
+  "candidate_sha256": "be137e75d4f3e4c483e6adef6d72be719add5ff84ab61ea9deb424e15459d897",
+  "graded_at": "2026-11-07T12:08:50Z",
+  "per_testcase": {
+    "mgba-carry": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "cpu"
+    },
+    "aw-arm-alu": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "cpu"
+    },
+    "mgba-io-read": {
+      "video_score": 2.9731867476995393e-7,
+      "section": "procedural",
+      "subsystem": "memory"
+    },
+    "memory": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "memory"
+    },
+    "ppu-vram-mirror": {
+      "video_score": 7.222588984963759e-14,
+      "section": "procedural",
+      "subsystem": "halt_irq"
+    },
+    "timer-reload": {
+      "video_score": 2.7561764841325496e-15,
+      "section": "procedural",
+      "subsystem": "timer"
+    },
+    "mgba-dma": {
+      "video_score": 2.4420745101058384e-6,
+      "section": "procedural",
+      "subsystem": "dma"
+    },
+    "timer-start-stop": {
+      "video_score": 5.628097565437776e-13,
+      "section": "procedural",
+      "subsystem": "timer"
+    },
+    "dma-priority": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "dma"
+    },
+    "tonc-snd1": {
+      "video_score": 0.983136319577008,
+      "audio_score": 0.11105405243620843,
+      "section": "replay",
+      "subsystem": "gameplay"
+    },
+    "aw-thumb-alu": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "cpu"
+    }
+  },
+  "sections": {
+    "procedural": {
+      "score": 0.46500011998192214,
+      "weight": 0.2,
+      "subsystems": {
+        "halt_irq": 7.222588984963759e-14,
+        "memory": 0.5000001486593374,
+        "timer": 2.827829665139551e-13,
+        "dma": 0.5000012210372551,
+        "comprehensive": 0.0,
+        "cpu": 1.0
+      }
+    },
+    "replay": {
+      "score": 0.983136319577008,
+      "weight": 0.6,
+      "subsystems": {
+        "gameplay": 0.983136319577008
+      }
+    },
+    "audio": {
+      "score": 0.055527026218104215,
+      "weight": 0.2,
+      "subsystems": {
+        "game_audio": 0.0,
+        "psg": 0.11105405243620843
+      }
+    }
+  },
+  "overall": 0.69398722098621
+}

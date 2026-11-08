@@ -1,0 +1,43 @@
+config: reference=reference/mesen.wasm
+candidate: v12 (126839 bytes)
+
+indexed 77 ROMs under "/work/gba-eval/results/.subset-v12-audio/roms"
+corpus: 4 testcases
+
+── tonc-snd1 (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v12 ─────────────────────────
+│ video: 0.9997  audio: 0.9997
+│ ✗ 1/60 frames diverge (first: 0)
+│   avg 240 px/frame (0.62% of screen)
+│   worst: frame 0 (240 px = 0.6%)
+└──────────────────────────────────────────────────
+── piugba-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v12 ─────────────────────────
+│ video: 0.5321  audio: 0.7001
+│ ✗ 1494/1937 frames diverge (first: 232)
+│   avg 19600 px/frame (51.04% of screen)
+│   worst: frame 751 (36599 px = 95.3%)
+└──────────────────────────────────────────────────
+── waimanu-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v12 ─────────────────────────
+│ video: 0.9989  audio: 0.9885
+│ ✗ 50/4086 frames diverge (first: 277)
+│   avg 14828 px/frame (38.62% of screen)
+│   worst: frame 505 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+── chip-advance-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v12 ─────────────────────────
+│ video: 0.0990  audio: 0.0193
+│ ✗ 3406/3523 frames diverge (first: 1)
+│   avg 25361 px/frame (66.05% of screen)
+│   worst: frame 256 (38175 px = 99.4%)
+└──────────────────────────────────────────────────
+
+╔══════════════════════════════════════════════════════════╗
+║  OVERALL: 0.5154                                        ║
+╠══════════════════════════════════════════════════════════╣
+║  procedural   0.0000 ░░░░░░░░░░░░░░░░░░░░
+║  replay       0.6574 █████████████░░░░░░░
+║  audio        0.6048 ████████████░░░░░░░░
+╚══════════════════════════════════════════════════════════╝
+written to "/work/gba-eval/results/v12-audio"

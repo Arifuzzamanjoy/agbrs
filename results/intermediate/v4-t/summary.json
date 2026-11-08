@@ -1,0 +1,67 @@
+{
+  "candidate": "v4",
+  "candidate_sha256": "00aada3756ea2a7fee36e082fae1c11b24aba24effdd9ea0766fbbe1511d1afe",
+  "graded_at": "2026-11-07T12:25:11Z",
+  "per_testcase": {
+    "timer-reload": {
+      "video_score": 7.718501366339815e-14,
+      "section": "procedural",
+      "subsystem": "timer"
+    },
+    "aw-thumb-alu": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "cpu"
+    },
+    "timer-start-stop": {
+      "video_score": 9.52768999371556e-13,
+      "section": "procedural",
+      "subsystem": "timer"
+    },
+    "ppu-vram-mirror": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "halt_irq"
+    },
+    "mgba-dma": {
+      "video_score": 0.00004148725678240887,
+      "section": "procedural",
+      "subsystem": "dma"
+    },
+    "memory": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "memory"
+    }
+  },
+  "sections": {
+    "replay": {
+      "score": 0.0,
+      "weight": 0.6,
+      "subsystems": {
+        "gameplay": 0.0
+      }
+    },
+    "audio": {
+      "score": 0.0,
+      "weight": 0.2,
+      "subsystems": {
+        "game_audio": 0.0,
+        "psg": 0.0
+      }
+    },
+    "procedural": {
+      "score": 0.6000033189806044,
+      "weight": 0.2,
+      "subsystems": {
+        "timer": 5.149770065174771e-13,
+        "memory": 1.0,
+        "dma": 0.00004148725678240887,
+        "halt_irq": 1.0,
+        "comprehensive": 0.0,
+        "cpu": 1.0
+      }
+    }
+  },
+  "overall": 0.1200006637961209
+}

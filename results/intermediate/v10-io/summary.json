@@ -1,0 +1,47 @@
+{
+  "candidate": "v10",
+  "candidate_sha256": "0cb0bde81474ba5dc1e9587f565add8732436556fbd2103463026f32b3e8aabc",
+  "graded_at": "2026-11-07T13:34:35Z",
+  "per_testcase": {
+    "mgba-io-read": {
+      "video_score": 1.299691067563316e-6,
+      "section": "procedural",
+      "subsystem": "memory"
+    },
+    "memory": {
+      "video_score": 1.0,
+      "section": "procedural",
+      "subsystem": "memory"
+    }
+  },
+  "sections": {
+    "replay": {
+      "score": 0.0,
+      "weight": 0.6,
+      "subsystems": {
+        "gameplay": 0.0
+      }
+    },
+    "audio": {
+      "score": 0.0,
+      "weight": 0.2,
+      "subsystems": {
+        "game_audio": 0.0,
+        "psg": 0.0
+      }
+    },
+    "procedural": {
+      "score": 0.07500009747683008,
+      "weight": 0.2,
+      "subsystems": {
+        "cpu": 0.0,
+        "memory": 0.5000006498455338,
+        "comprehensive": 0.0,
+        "halt_irq": 0.0,
+        "dma": 0.0,
+        "timer": 0.0
+      }
+    }
+  },
+  "overall": 0.015000019495366015
+}

@@ -1,0 +1,49 @@
+{
+  "candidate": "v2",
+  "candidate_sha256": "7a8c5fb6433b51b02ec342f3d575dbed2b84e7af9bb80b4f4f9625ad9fdba58f",
+  "graded_at": "2026-11-07T12:14:27Z",
+  "per_testcase": {
+    "tonc-snd1": {
+      "video_score": 0.983136319577008,
+      "audio_score": 0.9361128346116709,
+      "section": "replay",
+      "subsystem": "gameplay"
+    },
+    "chip-advance-gameplay": {
+      "video_score": 0.014784418637626397,
+      "audio_score": 0.0,
+      "section": "replay",
+      "subsystem": "gameplay"
+    }
+  },
+  "sections": {
+    "replay": {
+      "score": 0.49896036910731717,
+      "weight": 0.6,
+      "subsystems": {
+        "gameplay": 0.49896036910731717
+      }
+    },
+    "audio": {
+      "score": 0.23402820865291774,
+      "weight": 0.2,
+      "subsystems": {
+        "game_audio": 0.0,
+        "psg": 0.46805641730583547
+      }
+    },
+    "procedural": {
+      "score": 0.0,
+      "weight": 0.2,
+      "subsystems": {
+        "cpu": 0.0,
+        "dma": 0.0,
+        "halt_irq": 0.0,
+        "memory": 0.0,
+        "timer": 0.0,
+        "comprehensive": 0.0
+      }
+    }
+  },
+  "overall": 0.34618186319497385
+}

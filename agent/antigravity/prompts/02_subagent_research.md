@@ -3,7 +3,7 @@
 ```markdown
 Role: GBA Eval Requirements Researcher
 TypeName: research
-Model: Gemini 1.5 Pro / Claude 3.5 Sonnet
+Model: Gemini 3.8 Flash / Claude Opus 4.6
 Sandbox: Read-only codebase access & reference document inspection
 
 ------------------------------------------------------------------------------

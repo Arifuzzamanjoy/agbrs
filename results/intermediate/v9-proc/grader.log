@@ -1,0 +1,121 @@
+config: reference=reference/mesen.wasm
+candidate: v9 (121989 bytes)
+
+indexed 77 ROMs under "/work/gba-eval/results/.subset-v9-proc/roms"
+corpus: 16 testcases
+
+── aw-arm-alu (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v9 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✗ 4/600 frames diverge (first: 2)
+│   avg 25 px/frame (0.06% of screen)
+│   worst: frame 3 (44 px = 0.1%)
+└──────────────────────────────────────────────────
+── aw-arm-ldr-str (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v9 ─────────────────────────
+│ video: 0.9909  audio: —
+│ ✗ 12/600 frames diverge (first: 2)
+│   avg 2873 px/frame (7.48% of screen)
+│   worst: frame 84 (6551 px = 17.1%)
+└──────────────────────────────────────────────────
+── aw-arm-ldm-stm (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v9 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✗ 11/400 frames diverge (first: 2)
+│   avg 18 px/frame (0.05% of screen)
+│   worst: frame 3 (44 px = 0.1%)
+└──────────────────────────────────────────────────
+── aw-thumb-alu (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v9 ─────────────────────────
+│ video: 0.9871  audio: —
+│ ✗ 16/400 frames diverge (first: 2)
+│   avg 1523 px/frame (3.97% of screen)
+│   worst: frame 163 (5828 px = 15.2%)
+└──────────────────────────────────────────────────
+── aw-thumb-ldr-str (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v9 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✗ 19/500 frames diverge (first: 2)
+│   avg 16 px/frame (0.04% of screen)
+│   worst: frame 3 (44 px = 0.1%)
+└──────────────────────────────────────────────────
+── aw-thumb-ldm-stm (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v9 ─────────────────────────
+│ video: 0.9906  audio: —
+│ ✗ 24/500 frames diverge (first: 2)
+│   avg 858 px/frame (2.23% of screen)
+│   worst: frame 263 (4953 px = 12.9%)
+└──────────────────────────────────────────────────
+── memory (procedural/memory) ──────────────────────────
+┌─ Mesen (cached) vs v9 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✓ all 60 frames within pixel noise floor
+└──────────────────────────────────────────────────
+── mgba-io-read (procedural/memory) ──────────────────────────
+┌─ Mesen (cached) vs v9 ─────────────────────────
+│ video: 0.9944  audio: —
+│ ✗ 576/600 frames diverge (first: 2)
+│   avg 2046 px/frame (5.33% of screen)
+│   worst: frame 25 (3946 px = 10.3%)
+└──────────────────────────────────────────────────
+── mgba-shifter (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v9 ─────────────────────────
+│ video: 0.9978  audio: —
+│ ✗ 8/600 frames diverge (first: 2)
+│   avg 884 px/frame (2.30% of screen)
+│   worst: frame 85 (3906 px = 10.2%)
+└──────────────────────────────────────────────────
+── mgba-carry (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v9 ─────────────────────────
+│ video: 0.9973  audio: —
+│ ✗ 9/600 frames diverge (first: 2)
+│   avg 1093 px/frame (2.85% of screen)
+│   worst: frame 103 (5788 px = 15.1%)
+└──────────────────────────────────────────────────
+── mgba-multiply-long (procedural/cpu) ──────────────────────────
+┌─ Mesen (cached) vs v9 ─────────────────────────
+│ video: 0.9961  audio: —
+│ ✗ 489/600 frames diverge (first: 2)
+│   avg 222 px/frame (0.58% of screen)
+│   worst: frame 115 (4002 px = 10.4%)
+└──────────────────────────────────────────────────
+── mgba-dma (procedural/dma) ──────────────────────────
+┌─ Mesen (cached) vs v9 ─────────────────────────
+│ video: 0.9969  audio: —
+│ ✗ 376/600 frames diverge (first: 2)
+│   avg 51 px/frame (0.13% of screen)
+│   worst: frame 235 (5003 px = 13.0%)
+└──────────────────────────────────────────────────
+── timer-reload (procedural/timer) ──────────────────────────
+┌─ Mesen (cached) vs v9 ─────────────────────────
+│ video: 0.9111  audio: —
+│ ✗ 59/60 frames diverge (first: 1)
+│   avg 2018 px/frame (5.26% of screen)
+│   worst: frame 2 (2053 px = 5.3%)
+└──────────────────────────────────────────────────
+── timer-start-stop (procedural/timer) ──────────────────────────
+┌─ Mesen (cached) vs v9 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✓ all 60 frames within pixel noise floor
+└──────────────────────────────────────────────────
+── dma-priority (procedural/dma) ──────────────────────────
+┌─ Mesen (cached) vs v9 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✓ all 60 frames within pixel noise floor
+└──────────────────────────────────────────────────
+── ppu-vram-mirror (procedural/halt_irq) ──────────────────────────
+┌─ Mesen (cached) vs v9 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✗ 3/1200 frames diverge (first: 0)
+│   avg 248 px/frame (0.65% of screen)
+│   worst: frame 76 (260 px = 0.7%)
+└──────────────────────────────────────────────────
+
+╔══════════════════════════════════════════════════════════╗
+║  OVERALL: 0.1172                                        ║
+╠══════════════════════════════════════════════════════════╣
+║  procedural   0.5861 ████████████░░░░░░░░
+║  replay       0.0000 ░░░░░░░░░░░░░░░░░░░░
+║  audio        0.0000 ░░░░░░░░░░░░░░░░░░░░
+╚══════════════════════════════════════════════════════════╝
+written to "/work/gba-eval/results/v9-proc"

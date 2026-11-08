@@ -1,0 +1,29 @@
+config: reference=reference/mesen.wasm
+candidate: v2 (116802 bytes)
+
+indexed 77 ROMs under "/work/gba-eval/results/.subset-v2-audio/roms"
+corpus: 2 testcases
+
+── tonc-snd1 (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v2 ─────────────────────────
+│ video: 0.9831  audio: 0.9361
+│ ✗ 5/60 frames diverge (first: 0)
+│   avg 208 px/frame (0.54% of screen)
+│   worst: frame 0 (480 px = 1.2%)
+└──────────────────────────────────────────────────
+── chip-advance-gameplay (replay/gameplay) ──────────────────────────
+┌─ Mesen (cached) vs v2 ─────────────────────────
+│ video: 0.0148  audio: 0.0000
+│ ✗ 3523/3523 frames diverge (first: 0)
+│   avg 37948 px/frame (98.82% of screen)
+│   worst: frame 0 (38400 px = 100.0%)
+└──────────────────────────────────────────────────
+
+╔══════════════════════════════════════════════════════════╗
+║  OVERALL: 0.3462                                        ║
+╠══════════════════════════════════════════════════════════╣
+║  procedural   0.0000 ░░░░░░░░░░░░░░░░░░░░
+║  replay       0.4990 ██████████░░░░░░░░░░
+║  audio        0.2340 █████░░░░░░░░░░░░░░░
+╚══════════════════════════════════════════════════════════╝
+written to "/work/gba-eval/results/v2-audio"

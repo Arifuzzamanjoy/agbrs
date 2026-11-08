@@ -1,0 +1,27 @@
+config: reference=reference/mesen.wasm
+candidate: v10 (121934 bytes)
+
+indexed 77 ROMs under "/work/gba-eval/results/.subset-v10-io/roms"
+corpus: 2 testcases
+
+── memory (procedural/memory) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 1.0000  audio: —
+│ ✓ all 60 frames within pixel noise floor
+└──────────────────────────────────────────────────
+── mgba-io-read (procedural/memory) ──────────────────────────
+┌─ Mesen (cached) vs v10 ─────────────────────────
+│ video: 0.9945  audio: —
+│ ✗ 576/600 frames diverge (first: 2)
+│   avg 2046 px/frame (5.33% of screen)
+│   worst: frame 25 (3946 px = 10.3%)
+└──────────────────────────────────────────────────
+
+╔══════════════════════════════════════════════════════════╗
+║  OVERALL: 0.0150                                        ║
+╠══════════════════════════════════════════════════════════╣
+║  procedural   0.0750 ██░░░░░░░░░░░░░░░░░░
+║  replay       0.0000 ░░░░░░░░░░░░░░░░░░░░
+║  audio        0.0000 ░░░░░░░░░░░░░░░░░░░░
+╚══════════════════════════════════════════════════════════╝
+written to "/work/gba-eval/results/v10-io"
