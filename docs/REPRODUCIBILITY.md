@@ -12,6 +12,7 @@ The emulator core is written in pure Rust (edition 2021) with no third-party cra
 - **Cargo**: Corresponding version (Tested on `cargo 1.99.1`)
 - **Wasm Target**: `wasm32-unknown-unknown`
 - **Harness Environment**: Linux x86_64, Git LFS (for reference caches), Docker / Wasmtime
+- **Platforms**: building and testing work anywhere Rust does. The `tools/*.sh` grading scripts need bash (Linux, macOS, or WSL / Git Bash on Windows); the build and tests were also checked on Ubuntu under WSL2.
 
 ---
 
@@ -34,10 +35,12 @@ dist/gba_emu.wasm
 ```
 
 ### Verification (SHA-256)
-You can verify the candidate binary hash:
+Both files should hash to `b2705a31a2efef0e08b123254c91a62b0201dda702e1ea6e45b0346929d3514a`:
 ```bash
-sha256sum target/wasm32-unknown-unknown/release/gba_emu.wasm
+sha256sum target/wasm32-unknown-unknown/release/gba_emu.wasm dist/gba_emu.wasm   # Linux / WSL
+shasum -a 256 target/wasm32-unknown-unknown/release/gba_emu.wasm dist/gba_emu.wasm  # macOS
 ```
+On Windows PowerShell: `Get-FileHash -Algorithm SHA256 <file>`.
 
 ---
 

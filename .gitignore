@@ -2,3 +2,5 @@
 .oracle_frames_used
 *.ppm
 *.png
+__pycache__/
+*.pyc

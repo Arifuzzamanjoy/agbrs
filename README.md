@@ -57,6 +57,8 @@ cargo test
 # or natively from this repo, with gba-eval cloned next to it
 tools/grade.sh dist/gba_emu.wasm my-run 1
 ```
+Native grading needs bash, `git lfs pull` inside `../gba-eval`, a C toolchain
+(`build-essential` on Ubuntu) and about 8 GB of RAM.
 See [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md) for full grading details.
 
 ---
