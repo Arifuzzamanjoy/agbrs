@@ -8,10 +8,14 @@ An original Game Boy Advance (GBA) emulator written in Rust from scratch, compil
 
 Where each requested deliverable is; anything missing or redacted is listed in `HANDOFF.md` ("Omissions").
 
+> **Corrections after review (2026-11-09):** see [CORRECTIONS.md](CORRECTIONS.md).
+> The reviewed version is tagged `reviewed-2026-11-08`; all corrections are
+> separate later commits.
+
 | Deliverable | Location | Description |
 |---|---|---|
 | **Handoff** | [HANDOFF.md](HANDOFF.md) | Architectural overview, benchmark results (baseline 0.3789 → see the 2026-11-07 pass), and limitations |
-| **Compiled Artifact** | [dist/gba_emu.wasm](dist/gba_emu.wasm) | Pre-built release WebAssembly binary (124 KB, sha256 `b2705a31…`; rebuilds byte-identically, see `results/logs/build-wasm.txt`) |
+| **Compiled Artifact** | [dist/gba_emu.wasm](dist/gba_emu.wasm) | Pre-built release WebAssembly binary (129 KB, sha256 `c4f53a24…`, corrected build of 2026-11-09; reviewed build was `b2705a31…`; rebuilds byte-identically, see `results/logs/build-wasm.txt`) |
 | **Reproduction Guide** | [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md) | Step-by-step instructions to rebuild, run unit tests, and grade against Mesen2 |
 | **Decisions & Failures** | [docs/DECISIONS_AND_FAILURES.md](docs/DECISIONS_AND_FAILURES.md) | Log of intermediate design pivots, failed attempts, and bug diagnoses |
 | **Workflow Metadata** | [docs/WORKFLOW_METADATA.md](docs/WORKFLOW_METADATA.md) | Toolchain versions (Rust 1.99.1), estimated human time, and model usage |

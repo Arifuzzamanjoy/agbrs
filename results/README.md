@@ -10,7 +10,8 @@ grader's `summary.json` and a per-test table (`scores.txt`, from
 | `baseline-orig/` | 9608c373c1c1 | 0.3789 | `dist/gba_emu.wasm` as first committed, before the 2026-11-07 pass |
 | `v8-full/` | 695843fb0de9 | 0.5655 | APU rewrite, access timing, frame/boot alignment |
 | `v11-full/` | d3c2777ee59b | 0.6775 | + lockstep-derived IRQ/DMA/prefetch rules, key latching |
-| `final/` | b2705a31a2ef | 0.6900 | + SOUNDBIAS sample rate, mosaic, darken rounding (`dist/gba_emu.wasm`); `scores.txt` compares to baseline |
+| `final/` | b2705a31a2ef | 0.6900 | + SOUNDBIAS sample rate, mosaic, darken rounding (the reviewed build); `scores.txt` compares to baseline |
+| `corrections-2026-11-09/` | c4f53a24bb41 | 0.6900 | Reset fix + waitstates rewrite (`dist/gba_emu.wasm`); `scores.txt` compares to `final/`: every testcase identical |
 
 Each of these four folders also has the grader's `grader.log`.
 
@@ -45,7 +46,7 @@ runs. `v6-full` is a real regression (see
 
 - `logs/build-wasm.txt`: clean release build with the pinned toolchain;
   shows the rebuilt wasm is byte-identical to `dist/gba_emu.wasm`.
-- `logs/cargo-test.txt`: `cargo test --release` output (9 tests, all pass).
+- `logs/cargo-test.txt`: `cargo test --release` output (12 tests, all pass).
 
 Screenshots/WAVs from the grader are not committed (size); re-run
 `tools/grade.sh dist/gba_emu.wasm <name>` to regenerate them.

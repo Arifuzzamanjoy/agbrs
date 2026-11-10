@@ -119,32 +119,26 @@ impl Bus {
         }
     }
 
+    /// Return to power-on state. Rebuilds from `Bus::new()` so no field
+    /// can be missed (resetting fields one by one once left the DMA
+    /// latch, `dma_ran` and the prefetch head from the previous run).
+    /// Only the loaded ROM and the debug hooks set by native tools are
+    /// kept.
     pub fn reset(&mut self) {
-        self.ewram.fill(0);
-        self.iwram.fill(0);
-        self.palette.fill(0);
-        self.vram.fill(0);
-        self.oam.fill(0);
-        self.sram.fill(0);
-        self.io = IoRegisters::new();
+        let rom = core::mem::take(&mut self.rom);
+        let watch = self.watch;
+        let access_log = self.access_log.take().map(|mut l| {
+            l.clear();
+            l
+        });
+        *self = Bus {
+            rom,
+            watch,
+            access_log,
+            ..Bus::new()
+        };
         self.ppu.reset();
         self.apu.reset();
-        self.dma = DmaController::new();
-        self.timers = Timers::new();
-        self.ws = WaitStates::new();
-        self.open_bus = 0;
-        self.cycles = 0;
-        self.next_seq_addr = u32::MAX;
-        self.pf_active = false;
-        self.pf_count = 0;
-        self.pf_progress = 0;
-        self.halt_request = false;
-        self.io_shadow.fill(0);
-        self.bios_latch = 0;
-        self.fetch_in_bios = true;
-        self.now = 0;
-        self.timer_sync = 0;
-        self.irq_since = None;
     }
 
     /// Re-evaluate the IRQ line after IE/IF/IME changed at time `t`.
@@ -222,9 +216,7 @@ impl Bus {
     fn access_cost(&mut self, addr: u32, width: u32) -> u32 {
         let seq = addr == self.next_seq_addr;
         self.next_seq_addr = addr.wrapping_add(width);
-        let mode = if seq { waitstates::SEQUENTIAL } else { 0 }
-            | if width == 4 { waitstates::WORD } else { 0 };
-        self.ws.get(addr, mode) as u32
+        self.ws.access_cycles(addr, width, seq)
     }
 
     /// Cycles spent while the Game Pak bus is idle let the prefetch
@@ -234,7 +226,7 @@ impl Bus {
         if !self.pf_active || self.pf_count >= 8 {
             return;
         }
-        let s = self.ws.get(self.pf_head | 2, waitstates::SEQUENTIAL) as u32;
+        let s = self.ws.rom_seq_halfword(self.pf_head);
         self.pf_progress += cycles;
         while self.pf_progress >= s && self.pf_count < 8 {
             self.pf_progress -= s;
@@ -292,7 +284,7 @@ impl Bus {
         if self.io.waitcnt & 0x4000 != 0 && self.pf_active && addr == self.pf_head {
             // Served from the prefetch buffer: 1 cycle per halfword
             // available, otherwise stall for the in-flight fetch.
-            let s = self.ws.get(addr | 2, waitstates::SEQUENTIAL) as u32;
+            let s = self.ws.rom_seq_halfword(addr);
             let mut cost = 0;
             for _ in 0..width / 2 {
                 if self.pf_count > 0 {
@@ -344,8 +336,8 @@ impl Bus {
     /// access at the branch destination.
     #[inline(always)]
     pub fn branch_dummy_cycle(&mut self, target: u32, width: u32) {
-        let mode = waitstates::SEQUENTIAL | if width == 4 { waitstates::WORD } else { 0 };
-        let c = self.ws.get(target | 2, mode) as u32;
+        // Never a 128 KiB block start: the dummy cycle is always S.
+        let c = self.ws.access_cycles(target | 2, width, true);
         if !Self::is_gamepak_rom(target) {
             self.prefetch_advance(c);
         }
@@ -357,9 +349,7 @@ impl Bus {
     /// sequential streams (2N + 2(n-1)S per GBATEK), unlike the CPU.
     #[inline(always)]
     fn dma_cost(&mut self, addr: u32, width: u32, seq: bool) {
-        let mode = if seq { waitstates::SEQUENTIAL } else { 0 }
-            | if width == 4 { waitstates::WORD } else { 0 };
-        let c = self.ws.get(addr, mode) as u32;
+        let c = self.ws.access_cycles(addr, width, seq);
         if (addr >> 24) >= 0x08 {
             self.pf_active = false;
             self.pf_count = 0;

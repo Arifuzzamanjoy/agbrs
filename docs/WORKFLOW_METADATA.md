@@ -49,4 +49,4 @@ The total active human effort for the initial implementation was approximately *
 
 ## 4. Originality
 
-All code was written from scratch guided by the ARM7TDMI reference manual, GBATEK, and the `gba-eval` specification. No existing GBA emulator source repositories were cloned or reused. Omissions and external dependencies are listed in `HANDOFF.md`.
+The code was written with AI agents, guided by the ARM7TDMI reference manual, GBATEK and the `gba-eval` specification. No existing GBA emulator repository was cloned or reused. One exception was found in review: the reviewed version's `src/bus/waitstates.rs` closely matched Mesen2's structure and has to be treated as adapted. It was replaced on 2026-11-09 (see `CORRECTIONS.md`). The Claude Code sessions also read parts of gba-eval's own reference wrapper and harness (see `HANDOFF.md`, Disclosures). Omissions and external dependencies are listed in `HANDOFF.md`.

@@ -1,5 +1,8 @@
 # Handoff: GBA Emulator (agbrs)
 
+> **Corrected 2026-11-09 after review.** See [`CORRECTIONS.md`](CORRECTIONS.md)
+> for what changed and why. The reviewed version is tag `reviewed-2026-11-08`.
+
 ## Overview
 
 Original Game Boy Advance emulator built from scratch in Rust, targeting `wasm32-unknown-unknown`. Implements all major GBA hardware subsystems: ARM7TDMI CPU (ARM + Thumb), memory bus, PPU, DMA, timers, interrupts, and audio (PSG + DirectSound FIFO).
@@ -95,7 +98,8 @@ cleaned-up version of the same prompt sequence, usable as a template, is in
 | Baseline (`dist/` wasm as first committed, sha256 9608c373…) | 0.3789 | 0.4606 | 0.4261 | 0.0865 |
 | Intermediate (v8: APU rewrite, access timing, frame/boot alignment) | 0.5655 | 0.5537 | 0.5861 | 0.5802 |
 | v11 (+ lockstep-derived IRQ/DMA/prefetch rules, input latching) | 0.6775 | 0.7137 | 0.5861 | 0.6605 |
-| **Final** (`dist/gba_emu.wasm`, sha256 b2705a31…) | **0.6900** | **0.7181** | **0.5861** | **0.7096** |
+| **Final** as reviewed (sha256 b2705a31…) | **0.6900** | **0.7181** | **0.5861** | **0.7096** |
+| **Corrected 2026-11-09** (`dist/gba_emu.wasm`, sha256 c4f53a24…; reset fix, waitstates rewrite) | **0.6900** | **0.7181** | **0.5861** | **0.7096** |
 
 Per-testcase tables: `results/` (baseline, v8, v11, final), produced by
 `tools/scores.py`.
@@ -206,19 +210,37 @@ Where each requested deliverable is: the table in [`README.md`](README.md).
   worked on a GBA or any other emulator. The Claude Code transcripts show
   the agent read only the gba-eval README mention of `gba-eval-attempts`;
   it did not open those repositories.
-- **`src/bus/waitstates.rs` and Mesen2**: the file's header says it is
-  "mirroring Mesen2's GbaWaitStates". Only the idea and name were borrowed
-  (a precomputed lookup table of access cycles per region, rebuilt when
-  WAITCNT changes). The cycle values are GBATEK's: WS0 5/3, WS1 5/5,
-  WS2 5/9, SRAM 5 (wait states + 1) at reset, and no Mesen2 code was
-  copied.
+- **`src/bus/waitstates.rs` and Mesen2** *(corrected 2026-11-09, see
+  `CORRECTIONS.md`)*: the version reviewed (tag `reviewed-2026-11-08`) was
+  written by the Antigravity agent in the initial phase. Its header said
+  "mirroring Mesen2's GbaWaitStates", and its table construction and
+  address indexing closely match Mesen2's. No log exists of what that
+  agent consulted, so it cannot be shown to be independent; it should be
+  treated as adapted from Mesen2. The earlier statement here ("only the
+  idea and name were borrowed") was not supported and has been withdrawn.
+  The module has been replaced by one written from GBATEK's timing tables
+  with a different structure (direct per-access computation, no lookup
+  table); an exhaustive check over all 65,536 WAITCNT values showed the
+  same cycle costs as before.
 - **Outside sources read during the 2026-11-07 pass** (all visible in the
   transcripts): GBATEK and similar hardware documentation; the C sources of
   the NanoBoyAdvance *hardware test ROMs* (`nba-emu/hw-test`, timer tests)
   that the corpus itself uses, to learn what each test checks; web search
   results describing emulators. No emulator source code was copied.
-  `reference/mesen.wasm` (the grader's reference) was run as a black box by
-  `tools/lockstep` to compare CPU state and timing; its source was not read.
+- **gba-eval's reference wrapper and harness** *(corrected 2026-11-09)*:
+  the agent read parts of gba-eval's own source, not just its outputs:
+  `reference/mesen_step.cpp` (gba-eval's C++ wrapper that builds Mesen2
+  into `mesen.wasm`: initialisation, boot-screen skip, colour filters off,
+  ROM loading, reset and frame stepping; transcript `02b30b4e`, lines
+  828 and 831), the harness files `grader/src/wasm_candidate.rs` and
+  `lockstep/src/mesen.rs` (which give the reference's boot-frame count
+  of 6), and the export names in `mesen.wasm` (`strings`). These informed
+  `emu_boot_frames() = 6`, the boot/forced-blank state and how the
+  lockstep tool drives the reference. The reviewed version said the
+  reference's "source was not read"; that was inaccurate. What is
+  accurate: no Mesen2 emulator-core source (the `Core/GBA` code) was read
+  in the Claude Code sessions, and `tools/lockstep` uses `mesen.wasm`
+  only through its exported functions.
 
 ## Omissions, unavailable items and external dependencies
 

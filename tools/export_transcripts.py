@@ -186,18 +186,36 @@ def render(events, title):
 
 
 def usage(events):
-    u, models, ts = {}, {}, []
+    """Token usage per session.
+
+    Claude Code writes one transcript line per content block (text,
+    thinking, each tool call) of an API response, and every one of those
+    lines repeats the full `usage` of that response. Summing lines
+    therefore counts a response 2-3x. Count each response once, keyed by
+    its message id (max per field, in case a line carries a partial
+    count while streaming).
+    """
+    per_msg, models, ts, lines = {}, {}, [], 0
     for d in events:
         if d.get("timestamp"):
             ts.append(d["timestamp"])
         m = d.get("message")
         if isinstance(m, dict) and m.get("usage") and d.get("type") == "assistant":
-            models[m.get("model")] = models.get(m.get("model"), 0) + 1
+            lines += 1
+            key = m.get("id") or d.get("requestId") or d.get("uuid")
+            if key not in per_msg:
+                models[m.get("model")] = models.get(m.get("model"), 0) + 1
+                per_msg[key] = {}
             for k, v in m["usage"].items():
                 if isinstance(v, int):
-                    u[k] = u.get(k, 0) + v
+                    per_msg[key][k] = max(per_msg[key].get(k, 0), v)
+    u = {}
+    for msg in per_msg.values():
+        for k, v in msg.items():
+            u[k] = u.get(k, 0) + v
     return {"first_event": min(ts, default=None), "last_event": max(ts, default=None),
-            "assistant_messages_by_model": models, "tokens": u,
+            "api_responses_by_model": models, "assistant_transcript_lines": lines,
+            "tokens": u,
             "sidechain_events": sum(1 for d in events if d.get("isSidechain"))}
 
 

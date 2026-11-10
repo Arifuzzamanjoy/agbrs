@@ -32,9 +32,15 @@ Personal and unrelated details in the logs are replaced by `[redacted-…]` mark
 
 ## Model usage (from the transcripts' `usage` fields; see [`../transcripts/claude-code/usage.json`](../transcripts/claude-code/usage.json))
 
-| Session | Assistant messages | Input | Cache write | Cache read | Output |
+| Session | API responses | Input | Cache write | Cache read | Output |
 |---|---|---|---|---|---|
-| 02b30b4e (timing pass) | 816 | 1,678 | 1,500,058 | 292,885,466 | 927,208 |
-| 01dfc9aa (handoff audit) | 62 | 128 | 180,558 | 5,779,819 | 59,196 |
+| 02b30b4e (timing pass) | 318 (+2 synthetic) | 662 | 563,443 | 114,273,049 | 321,411 |
+| 01dfc9aa (handoff audit) | 31 | 64 | 82,227 | 2,910,435 | 25,570 |
+
+Counted once per API response (unique message id). The reviewed version
+of this table (tag `reviewed-2026-11-08`) summed every transcript line;
+Claude Code repeats a response's usage on each of its content blocks, so
+those figures were 2.3-2.9x too high (e.g. output 927,208 instead of
+321,411). See `CORRECTIONS.md`.
 
 Cost in dollars is not recorded by the client and is not estimated here.

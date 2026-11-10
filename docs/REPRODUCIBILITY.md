@@ -35,7 +35,7 @@ dist/gba_emu.wasm
 ```
 
 ### Verification (SHA-256)
-Both files should hash to `b2705a31a2efef0e08b123254c91a62b0201dda702e1ea6e45b0346929d3514a`:
+Both files should hash to `c4f53a24bb413b01ea1041664f2e646e7472537c5565f954c34d6a0bc6c12504` (the corrected build of 2026-11-09; the reviewed build at tag `reviewed-2026-11-08` hashes to `b2705a31a2efef0e08b123254c91a62b0201dda702e1ea6e45b0346929d3514a`):
 ```bash
 sha256sum target/wasm32-unknown-unknown/release/gba_emu.wasm dist/gba_emu.wasm   # Linux / WSL
 shasum -a 256 target/wasm32-unknown-unknown/release/gba_emu.wasm dist/gba_emu.wasm  # macOS
@@ -52,10 +52,11 @@ The repository includes sanity and smoke test harnesses:
 cargo test
 ```
 
-Expected: 9 tests pass (1 smoke test in `tests/debug_test.rs`, 8 regression
+Expected: 12 tests pass (1 smoke test in `tests/debug_test.rs`, 8 regression
 tests in `tests/regressions.rs`, which pin down behaviours fixed in the
 2026-11-07 pass: branch-to-same-PC, HALT, VRAM mirror hole, ROM open bus,
-BIOS read protection, PSG pitch, timer start/stop latency). A recorded run
+BIOS read protection, PSG pitch, timer start/stop latency; and 3 reset
+tests in `tests/reset.rs`, added 2026-11-09, see `CORRECTIONS.md`). A recorded run
 is in `results/logs/cargo-test.txt`.
 
 ---

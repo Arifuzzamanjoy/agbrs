@@ -47,6 +47,8 @@ impl Gba {
     }
 
     pub fn reset(&mut self) -> bool {
+        // Fresh CPU too: `Cpu::reset` alone keeps HALT/IRQ bookkeeping.
+        self.cpu = Cpu::new();
         self.bus.reset();
         let bios_stub = include_bytes!("../spec/gba_bios_stub.bin");
         self.bus.bios[..bios_stub.len()].copy_from_slice(bios_stub);

@@ -1,6 +1,5 @@
-# 2026-11-07T16:09:15Z
-   Compiling gba_emu v0.1.0 (/work/agbrs)
-    Finished `release` profile [optimized] target(s) in 15.49s
+   Compiling gba_emu v0.1.0 (/home/ubuntu/Upwork/rsbsa_new)
+    Finished `release` profile [optimized] target(s) in 24.46s
      Running unittests src/lib.rs (target/release/deps/gba_emu-697a38cf44b55ae1)
 
 running 0 tests
@@ -17,16 +16,25 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
      Running tests/regressions.rs (target/release/deps/regressions-095184a9840fcee4)
 
 running 8 tests
-test branch_to_self_stays_put ... ok
-test haltcnt_halts_until_irq ... ok
-test bx_to_following_word_switches_to_thumb ... ok
 test bios_is_read_protected_outside_bios ... ok
-test rom_out_of_bounds_returns_address_pattern ... ok
+test bx_to_following_word_switches_to_thumb ... ok
+test branch_to_self_stays_put ... ok
 test psg_square_pitch ... ok
+test haltcnt_halts_until_irq ... ok
+test rom_out_of_bounds_returns_address_pattern ... ok
 test timer_start_and_stop_latency ... ok
 test vram_upper_mirror_depends_on_mode ... ok
 
-test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/reset.rs (target/release/deps/reset-3b7fb2b560f0632c)
+
+running 3 tests
+test dma_latch_does_not_survive_reset ... ok
+test dma_from_unreadable_source_is_zero_on_fresh_instance ... ok
+test reset_instance_matches_fresh_instance ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
 
    Doc-tests gba_emu
 
